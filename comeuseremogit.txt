@@ -4,6 +4,9 @@ scaricati tig, serve per vedere tutta la storia del progetto per benino, è molt
 
 1)git clone https://github.com/canematto/mazeWebGL
 
+nel caso in cui non devi clonare ma vuoi fare l'upload di tutto quello che è cambiato sul server remoto fai aaccussi:
+1b) git pull --all
+
 ora vuoi iniziare a fare le tue cose, diciamo che vuoi costruire la slitta di babbo natale
 2)git checkout -b "slitta"
 
@@ -11,15 +14,15 @@ ora hai appena creato un nuovo branch chiamato slitta e ci stai dentro. ora tutt
 diciamo che hai creato il file o modificato il file ruote.js e lo vuoi caricare sul tuo branch perchè ancora pensi che non sia l'ora di chiudere il branch, le ruote sono sgonfie ma le vuoi gonfia dopo
 3) git add slitta.js
 4) git commit -m "ho appena regalato una slitta a babbo natale, speriamo non ci si ammazzi!"
-5) git push --set-upstream origin branchprova
+5) git push --set-upstream origin slitta
 
-come immaginerai gli stai a di di mandare quello che hai fatto su origin, il tuo branch locale, sul branch remoto branchprova.
+come immaginerai gli stai a di di mandare quello che hai fatto su origin, il tuo branch locale, sul branch remoto slitta.
 credo che questo comando lo devi fa ogni volta che passi da un branch a l'altro e lui non sa dove deve caricare la roba, di solito ti da un messaggio di errore che ti dice che fa
 
 a questo punto hai caricato tutto sul remoto e ti trovi ancora sul branch slitta.
 ora vuoi tornare sul branch master e vedere se io ho fatto qualcosa.
 6)git checkout master
-7) git fetch
+7) git pull --all
 
 l'ultimo comando scarica tutta la nuova roba che è cambiata dall'ultima volta che hai scaricato il master, in questo caso quando hai fatto git clone.
 sul master è tutto a posto e vuoi tornare sul tuo branch
@@ -32,13 +35,15 @@ a sto punto modifichi di nuovo slitta.js e vuoi far tornare tutti i cambiamenti 
 
 torni sul master. ora viene il bello, vuoi fare il merge del tuo branch!
 12)git checkout master
-13) git fetch
+13) git pull --all
 14) git merge slitta
 15)git branch -d slitta
-16) git push
+16) git push origin master
 
 il  comando 15) ha eliminato il branch slitta, diresti "tuttoapporno zio!" no col cazzo perchè elimina solo il branch locale e non quello remoto.
 ma noi siamo coatti e eliminiamo pure quello per non fare più confusione
-17) git push origin --delete branchprova
+17) git push origin --delete slitta
 
 ora se vai su git vedi che non hai più branchprova e che è stato mergiato
+
+ricomincia dal punto 1b)
