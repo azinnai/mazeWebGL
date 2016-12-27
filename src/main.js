@@ -152,7 +152,7 @@ function main() {
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
-  g_projMatrix.setPerspective(50.0, canvas.width/canvas.height, 0.02, 200.0);
+  g_projMatrix.setPerspective(50.0, canvas.width/canvas.height, 0.02, 400.0);
 
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
