@@ -112,7 +112,7 @@ function main() {
 
   var mazeWalls = initMazeVertexBuffers(gl);
 
-  var halfFloorSideLength = 50.0;
+  var halfFloorSideLength = 200.0;
   var floor = initFloorVertexBuffers(gl, halfFloorSideLength);
   if (!floor){
     console.log('Failed to set floor vertex information');

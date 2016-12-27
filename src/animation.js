@@ -15,9 +15,9 @@ var pitch = 0;
 var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
-var xPos = 0.0;
+var xPos = 0.056478155032779295;  
 var yPos = 1.4;
-var zPos = 15.0;
+var zPos = 201.7057334788756;
 var speed = 0;
 
 function handleKeys() {
@@ -62,7 +62,7 @@ function animate() {
             zPos -= Math.cos(degToRad(yaw)) * speed * elapsed;
             joggingAngle += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPos = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
-            //console.log('animating');
+            //console.log('xPos: ' + xPos + 'zPos: ' + zPos + '\n');
         }
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
