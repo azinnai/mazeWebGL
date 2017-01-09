@@ -66,28 +66,97 @@ function main() {
   // Calculate the view projection matrix
   var viewProjMatrix = new Matrix4();
   viewProjMatrix.setPerspective(50.0, canvas.width / canvas.height, 1.0, 100.0);
-  viewProjMatrix.lookAt(20.0, 10.0, 30.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  viewProjMatrix.lookAt(20.0, 30.0, 30.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
   // Register the event handler to be called on key press
-  //document.onkeydown = function(ev){ keydown(ev, gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); };
+  document.onkeydown = function(ev){ keydown(ev, gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); };
 
   draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
 }
 
-var ANGLE_STEP = 3.0;     // The increments of rotation angle (degrees)
-var g_arm1Angle = 0.0;   // The rotation angle of arm1 (degrees)
-var g_joint1Angle = 0.0; // The rotation angle of joint1 (degrees)
-var g_joint2Angle = 0.0;  // The rotation angle of joint2 (degrees)
-var g_joint3Angle = 0.0;  // The rotation angle of joint3 (degrees)
+var ANKLE_STEP = 3.0;     // The increments of rotation angle (degrees)
+var ARM_STEP = 7.0;     // The increments of rotation angle (degrees)
+var HIP_STEP = 4.0;     // The increments of rotation angle (degrees)
+var KNEE_STEP = 4.0;     // The increments of rotation angle (degrees)
 
-/*
+// 1 stands for LEFT, 2 stands for RIGHT
+var g_jointAnkle1 = 0.0;   // The rotation angle of arm1 (degrees)
+var g_jointAnkle2 = 0.0; // The rotation angle of joint1 (degrees)
+var g_jointKnee1 = 0.0;  // The rotation angle of joint2 (degrees)
+var g_jointKnee2 = 0.0;  // The rotation angle of joint3 (degrees)
+var g_jointHip1 = 0.0;  // The rotation angle of joint3 (degrees)
+var g_jointHip2 = 0.0;  // The rotation angle of joint3 (degrees)
+var g_jointArm1 = 0.0;  // The rotation angle of joint3 (degrees)
+var g_jointArm2 = 0.0;  // The rotation angle of joint3 (degrees)
+var val1 = [];
+var val2 = [];
+
+
+
 function keydown(ev, gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   switch (ev.keyCode) {
-    case 40: // Up arrow key -> the positive rotation of joint1 around the z-axis
-      if (g_joint1Angle < 135.0) g_joint1Angle += ANGLE_STEP;
+    case 38: // Up arrow key -> the positive rotation of joint1 around the z-axis
+
+      //for (i=0; i<24.0; i++) { 
+      //  if (g_jointAnkle1)
+      //}
+
+      if (g_jointAnkle1 < 24.0 && g_jointAnkle1 >= 0 && g_jointAnkle2 > -24.0 && g_jointAnkle2 <= 0) { 
+      g_jointAnkle1 += ANKLE_STEP;
+      g_jointAnkle2 -= ANKLE_STEP;
+      } else if (g_jointAnkle1 >= -24.0 && g_jointAnkle2 <= 24.0) { 
+      g_jointAnkle1 -= ANKLE_STEP;
+      g_jointAnkle2 += ANKLE_STEP;
+      }
+    
+
+      if (g_jointArm1 < 45.0 && g_jointArm2 > -45.0) { 
+      g_jointArm1 += ARM_STEP;
+      g_jointArm2 -= ARM_STEP;
+      } else if (g_jointArm1 >= -45.0 && g_jointArm2 <= 45.0) { 
+      g_jointArm1 -= ARM_STEP;
+      g_jointArm2 += ARM_STEP;
+      }
+
+      if (g_jointHip1 < 20.0 && g_jointHip2 > -20.0) { 
+      g_jointHip1 += HIP_STEP;
+      g_jointHip2 -= HIP_STEP;
+      } else if (g_jointHip1 >= -20.0 && g_jointHip2 <= 20.0) { 
+      g_jointHip1 -= HIP_STEP;
+      g_jointHip2 += HIP_STEP;
+      } 
+
+      if (g_jointKnee1 > -20.0 && g_jointKnee2 < 20.0) { 
+      g_jointKnee1 -= KNEE_STEP;
+      g_jointKnee2 += KNEE_STEP;
+      } else if (g_jointKnee1 <= 20.0 && g_jointKnee2 >= -20.0) { 
+      g_jointKnee1 += KNEE_STEP;
+      g_jointKnee2 -= KNEE_STEP;
+      }    
+
       break;
+ /*   
     case 38: // Down arrow key -> the negative rotation of joint1 around the z-axis
-      if (g_joint1Angle > -135.0) g_joint1Angle -= ANGLE_STEP;
+      if (g_jointAnkle1 > -22.0 && g_jointAnkle2 < 22.0) { 
+      g_jointAnkle1 -= ANKLE_STEP;
+      g_jointAnkle2 += ANKLE_STEP;
+      }
+
+      if (g_jointArm1 > -45.0 && g_jointArm2 < 45.0) { 
+      g_jointArm1 -= ARM_STEP;
+      g_jointArm2 += ARM_STEP;
+      }
+
+      if (g_jointHip1 > -20.0 && g_jointHip2 < 20.0) { 
+      g_jointHip1 -= HIP_STEP;
+      g_jointHip2 += HIP_STEP;
+      }  
+
+      if (g_jointKnee1 < 20.0 && g_jointKnee2 > -20.0) { 
+      g_jointKnee1 += KNEE_STEP;
+      g_jointKnee2 -= KNEE_STEP;
+      }  
+
       break;
     case 39: // Right arrow key -> the positive rotation of arm1 around the y-axis
       g_arm1Angle = (g_arm1Angle + ANGLE_STEP) % 360;
@@ -106,19 +175,21 @@ function keydown(ev, gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMat
       break;
     case 67: // 'c'key -> the nagative rotation of joint3
       if (g_joint3Angle > -60.0) g_joint3Angle = (g_joint3Angle - ANGLE_STEP) % 360;
-      break;
+      break;*/
     default: return; // Skip drawing at no effective action
   }
   // Draw
   draw(gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+console.log('left angle: ' + g_jointAnkle1 + 'right angle: ' + g_jointAnkle2 + '\n');
 }
-*/
 
-var g_baseBuffer = null;     // Buffer object for a base
-var g_arm1Buffer = null;     // Buffer object for arm1
-var g_arm2Buffer = null;     // Buffer object for arm2
-var g_palmBuffer = null;     // Buffer object for a palm
-var g_fingerBuffer = null;   // Buffer object for fingers
+
+var g_footBuffer = null;     // Buffer object for a base
+var g_bodyBuffer = null;     // Buffer object for a base
+var g_halfLegBuffer = null;     // Buffer object for a base
+var g_armBuffer = null;     // Buffer object for arm1
+var g_headBuffer = null;     // Buffer object for a palm
+var g_neckBuffer = null;   // Buffer object for fingers
 
 function initVertexBuffers(gl){
   // Vertex coordinate (prepare coordinates of cuboids for all segments)
@@ -132,21 +203,30 @@ function initVertexBuffers(gl){
   ]);
 
   var vertices_body = new Float32Array([  // Body(5x7x5)
-     5.0, 9.0, 2.5, -5.0, 9.0, 2.5, -5.0, 0.0, 2.5,  5.0, 0.0, 2.5, // v0-v1-v2-v3 front
-     5.0, 9.0, 2.5,  5.0, 0.0, 2.5,  5.0, 0.0,-2.5,  5.0, 9.0,-2.5, // v0-v3-v4-v5 right
-     5.0, 9.0, 2.5,  5.0, 9.0,-2.5, -5.0, 9.0,-2.5, -5.0, 9.0, 2.5, // v0-v5-v6-v1 up
-    -5.0, 9.0, 2.5, -5.0, 9.0,-2.5, -5.0, 0.0,-2.5, -5.0, 0.0, 2.5, // v1-v6-v7-v2 left
+     5.0, 12.0, 2.5, -5.0, 12.0, 2.5, -5.0, 0.0, 2.5,  5.0, 0.0, 2.5, // v0-v1-v2-v3 front
+     5.0, 12.0, 2.5,  5.0, 0.0, 2.5,  5.0, 0.0,-2.5,  5.0, 12.0,-2.5, // v0-v3-v4-v5 right
+     5.0, 12.0, 2.5,  5.0, 12.0,-2.5, -5.0, 12.0,-2.5, -5.0, 12.0, 2.5, // v0-v5-v6-v1 up
+    -5.0, 12.0, 2.5, -5.0, 12.0,-2.5, -5.0, 0.0,-2.5, -5.0, 0.0, 2.5, // v1-v6-v7-v2 left
     -5.0, 0.0,-2.5,  5.0, 0.0,-2.5,  5.0, 0.0, 2.5, -5.0, 0.0, 2.5, // v7-v4-v3-v2 down
-     5.0, 0.0,-2.5, -5.0, 0.0,-2.5, -5.0, 9.0,-2.5,  5.0, 9.0,-2.5  // v4-v7-v6-v5 back
+     5.0, 0.0,-2.5, -5.0, 0.0,-2.5, -5.0, 12.0,-2.5,  5.0, 12.0,-2.5  // v4-v7-v6-v5 back
   ]);
 
-  var vertices_halfLeg = new Float32Array([  // halfLeg(2x4x2)
-     1.0, 4.0, 1.0, -1.0, 4.0, 1.0, -1.0, 0.0, 1.0,  1.0, 0.0, 1.0, // v0-v1-v2-v3 front
-     1.0, 4.0, 1.0,  1.0, 0.0, 1.0,  1.0, 0.0,-1.0,  1.0, 4.0,-1.0, // v0-v3-v4-v5 right
-     1.0, 4.0, 1.0,  1.0, 4.0,-1.0, -1.0, 4.0,-1.0, -1.0, 4.0, 1.0, // v0-v5-v6-v1 up
-    -1.0, 4.0, 1.0, -1.0, 4.0,-1.0, -1.0, 0.0,-1.0, -1.0, 0.0, 1.0, // v1-v6-v7-v2 left
+  var vertices_UPhalfLeg = new Float32Array([  // halfLeg(2x4x2)
+     1.0, -6.0, 1.0, -1.0, -6.0, 1.0, -1.0,  0.0, 1.0,  1.0,  0.0, 1.0, // v0-v1-v2-v3 front
+     1.0, -6.0, 1.0,  1.0,  0.0, 1.0,  1.0,  0.0,-1.0,  1.0, -6.0,-1.0, // v0-v3-v4-v5 right
+     1.0, -6.0, 1.0,  1.0, -6.0,-1.0, -1.0, -6.0,-1.0, -1.0, -6.0, 1.0, // v0-v5-v6-v1 up
+    -1.0, -6.0, 1.0, -1.0, -6.0,-1.0, -1.0,  0.0,-1.0, -1.0,  0.0, 1.0, // v1-v6-v7-v2 left
+    -1.0,  0.0,-1.0,  1.0,  0.0,-1.0,  1.0,  0.0, 1.0, -1.0,  0.0, 1.0, // v7-v4-v3-v2 down
+     1.0,  0.0,-1.0, -1.0,  0.0,-1.0, -1.0, -6.0,-1.0,  1.0, -6.0,-1.0  // v4-v7-v6-v5 back
+  ]);
+
+    var vertices_DOWNhalfLeg = new Float32Array([  // halfLeg(2x4x2)
+     1.0, 6.0, 1.0, -1.0, 6.0, 1.0, -1.0, 0.0, 1.0,  1.0, 0.0, 1.0, // v0-v1-v2-v3 front
+     1.0, 6.0, 1.0,  1.0, 0.0, 1.0,  1.0, 0.0,-1.0,  1.0, 6.0,-1.0, // v0-v3-v4-v5 right
+     1.0, 6.0, 1.0,  1.0, 6.0,-1.0, -1.0, 6.0,-1.0, -1.0, 6.0, 1.0, // v0-v5-v6-v1 up
+    -1.0, 6.0, 1.0, -1.0, 6.0,-1.0, -1.0, 0.0,-1.0, -1.0, 0.0, 1.0, // v1-v6-v7-v2 left
     -1.0, 0.0,-1.0,  1.0, 0.0,-1.0,  1.0, 0.0, 1.0, -1.0, 0.0, 1.0, // v7-v4-v3-v2 down
-     1.0, 0.0,-1.0, -1.0, 0.0,-1.0, -1.0, 4.0,-1.0,  1.0, 4.0,-1.0  // v4-v7-v6-v5 back
+     1.0, 0.0,-1.0, -1.0, 0.0,-1.0, -1.0, 6.0,-1.0,  1.0, 6.0,-1.0  // v4-v7-v6-v5 back
   ]);
 
   var vertices_arm = new Float32Array([  // arm(2x8x2)
@@ -207,11 +287,12 @@ function initVertexBuffers(gl){
   // Write coords to buffers, but don't assign to attribute variables
   g_footBuffer = initArrayBufferForLaterUse(gl, vertices_foot, 3, gl.FLOAT);
   g_bodyBuffer = initArrayBufferForLaterUse(gl, vertices_body, 3, gl.FLOAT);
-  g_halfLegBuffer = initArrayBufferForLaterUse(gl, vertices_halfLeg, 3, gl.FLOAT);
+  g_UPhalfLegBuffer = initArrayBufferForLaterUse(gl, vertices_UPhalfLeg, 3, gl.FLOAT);
+  g_DOWNhalfLegBuffer = initArrayBufferForLaterUse(gl, vertices_DOWNhalfLeg, 3, gl.FLOAT);
   g_armBuffer = initArrayBufferForLaterUse(gl, vertices_arm, 3, gl.FLOAT);
   g_headBuffer = initArrayBufferForLaterUse(gl, vertices_head, 3, gl.FLOAT);
   g_neckBuffer = initArrayBufferForLaterUse(gl, vertices_neck, 3, gl.FLOAT);
-  if (!g_footBuffer || !g_bodyBuffer || !g_halfLegBuffer || 
+  if (!g_footBuffer || !g_bodyBuffer || !g_UPhalfLegBuffer || !g_DOWNhalfLegBuffer || 
     !g_armBuffer || !g_headBuffer || !g_neckBuffer) return -1;
   // Write normals to a buffer, assign it to a_Normal and enable it
   if (!initArrayBuffer(gl, 'a_Normal', normals, 3, gl.FLOAT)) return -1;
@@ -268,67 +349,91 @@ function initArrayBuffer(gl, attribute, data, num, type){
   return true;
 }
 
+var g_matrixStack = []; // Array for storing a matrix
+function pushMatrix(m) { // Store the specified matrix to the array
+  var m2 = new Matrix4(m);
+  g_matrixStack.push(m2);
+}
+
+function popMatrix() { // Retrieve the matrix from the array
+  return g_matrixStack.pop();
+}
 
 // Coordinate transformation matrix
 var g_modelMatrix = new Matrix4(), g_mvpMatrix = new Matrix4();
+
+
 
 function draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   // Clear color and depth buffer
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+
   // Draw a foot
-  var footHeight = 1.0;
+
   g_modelMatrix.setTranslate(0.0, -13.0, 0.0);
-  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix)
-  // Draw a foot
-  g_modelMatrix.setTranslate(6.0, -13.0, 0.0);
+  g_modelMatrix.rotate(g_jointAnkle1, 1.0, 0.0, 0.0);  // Rotate around the x-axis
   drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
- 
- 
+
+  // Draw a foot
+    
+  g_modelMatrix.setTranslate(6.0, -13.0, 0.0);
+  pushMatrix(g_modelMatrix);
+  g_modelMatrix.rotate(g_jointAnkle2, 1.0, 0.0, 0.0);  // Rotate around the x-axis
+  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  g_modelMatrix = popMatrix();
+
+    
   // Draw left lower halfLeg
-  var halfLegHeight = 4.0;
+  var footHeight = 1.0;
   g_modelMatrix.translate(-6.0, footHeight, 0.0);     // Move onto the base
-  //g_modelMatrix.rotate(g_arm1Angle, 0.0, 1.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_halfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  g_modelMatrix.rotate(g_jointKnee1, 1.0, 0.0, 0.0);  // Rotate around the y-axis
+  drawSegment(gl, n, g_DOWNhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
   // Draw right lower halfLeg
   g_modelMatrix.translate(6.0, 0.0, 0.0);     // Move onto the base
-  //g_modelMatrix.rotate(g_arm1Angle, 0.0, 1.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_halfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  g_modelMatrix.rotate(g_jointKnee2, 1.0, 0.0, 0.0);  // Rotate around the y-axis
+  drawSegment(gl, n, g_DOWNhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
 
   // Draw left upper halfLeg
+  var halfLegHeight = 11.0;
   g_modelMatrix.translate(-6.0, halfLegHeight, 0.0);     // Move onto the base
-  //g_modelMatrix.rotate(g_arm1Angle, 0.0, 1.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_halfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-
+  pushMatrix(g_modelMatrix);
+  g_modelMatrix.rotate(g_jointHip1, 1.0, 0.0, 0.0);  // Rotate around the x-axis
+  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  g_modelMatrix = popMatrix();
 
   // Draw right upper halfLeg
   g_modelMatrix.translate(6.0, 0.0, 0.0);     // Move onto the base
-  //g_modelMatrix.rotate(g_arm1Angle, 0.0, 1.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_halfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  pushMatrix(g_modelMatrix);
+  g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);  // Rotate around the x-axis
+  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  g_modelMatrix = popMatrix();
 
-
-  // Draw right upper halfLeg
-  g_modelMatrix.translate(-3.0, halfLegHeight, 0.0);     // Move onto the base
-  //g_modelMatrix.rotate(g_arm1Angle, 0.0, 1.0, 0.0);  // Rotate around the y-axis
+  // Draw body
+  g_modelMatrix.translate(-3.0, 0.0, 0.0);     // Move onto the base
+  //g_modelMatrix.rotate(, 1.0, 0.0, 0.0);  // Rotate around the y-axis
   drawSegment(gl, n, g_bodyBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
 
   // Draw right arm
-  segment = 4;
-  g_modelMatrix.translate(6.0, -segment, 0.0);       // Move to joint1
-  //g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0);  // Rotate around the z-axis
+  //segment = -1;
+  g_modelMatrix.translate(6.0, 10.0, 0.0);       // Move to joint1
+  pushMatrix(g_modelMatrix);
+  g_modelMatrix.rotate(g_jointArm1, 1.0, 0.0, 0.0);  // Rotate around the z-axis
   drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  g_modelMatrix = popMatrix();
 
   // Draw left arm
   g_modelMatrix.translate(-12.0, 0.0, 0.0);       // Move to joint1
-  //g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0);  // Rotate around the z-axis
+ pushMatrix(g_modelMatrix);
+  g_modelMatrix.rotate(g_jointArm2, 1.0, 0.0, 0.0);  // Rotate around the z-axis
   drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-
+  g_modelMatrix = popMatrix();
 
   // Draw neck
-  g_modelMatrix.translate(6.0, 13.0, 0.0);       // Move to joint1
+  g_modelMatrix.translate(6.0, 2.0, 0.0);       // Move to joint1
   //g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0);  // Rotate around the z-axis
   drawSegment(gl, n, g_neckBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
@@ -339,39 +444,9 @@ function draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   //g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0);  // Rotate around the z-axis
   drawSegment(gl, n, g_headBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
-/*
-  // A palm
-  var palmLength = 2.0;
-  g_modelMatrix.translate(0.0, arm2Length, 0.0);       // Move to palm
-  g_modelMatrix.rotate(g_joint2Angle, 0.0, 1.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_palmBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);  // Draw
-
-  // Move to the center of the tip of the palm
-  g_modelMatrix.translate(0.0, palmLength, 0.0);
-
-  // Draw finger1
-  pushMatrix(g_modelMatrix);
-    g_modelMatrix.translate(0.0, 0.0, 2.0);
-    g_modelMatrix.rotate(g_joint3Angle, 1.0, 0.0, 0.0);  // Rotate around the x-axis
-    drawSegment(gl, n, g_fingerBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-  g_modelMatrix = popMatrix();
-
-  // Finger2
-  g_modelMatrix.translate(0.0, 0.0, -2.0);
-  g_modelMatrix.rotate(-g_joint3Angle, 1.0, 0.0, 0.0);  // Rotate around the x-axis
-  drawSegment(gl, n, g_fingerBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-  */
 }
 
-var g_matrixStack = []; // Array for storing a matrix
-function pushMatrix(m) { // Store the specified matrix to the array
-  var m2 = new Matrix4(m);
-  g_matrixStack.push(m2);
-}
 
-function popMatrix() { // Retrieve the matrix from the array
-  return g_matrixStack.pop();
-}
 
 var g_normalMatrix = new Matrix4();  // Coordinate transformation matrix for normals
 
