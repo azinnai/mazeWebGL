@@ -74,11 +74,13 @@ function main() {
   draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
 }
 
-var ANKLE_STEP = 3.0;     // The increments of rotation angle (degrees)
-var ARM_STEP = 7.0;     // The increments of rotation angle (degrees)
-var HIP_STEP = 4.0;     // The increments of rotation angle (degrees)
-var KNEE_STEP = 4.0;     // The increments of rotation angle (degrees)
-
+var step = 100.0;
+var ankleInterval = 48.0;
+var armInterval = 25.0;
+var hipInterval = 40.0;
+var kneeInterval = 40.0;
+var lastUp = false;
+var lastDown = false;
 // 1 stands for LEFT, 2 stands for RIGHT
 var g_jointAnkle1 = 0.0;   // The rotation angle of arm1 (degrees)
 var g_jointAnkle2 = 0.0; // The rotation angle of joint1 (degrees)
@@ -90,97 +92,138 @@ var g_jointArm1 = 0.0;  // The rotation angle of joint3 (degrees)
 var g_jointArm2 = 0.0;  // The rotation angle of joint3 (degrees)
 var val1 = [];
 var val2 = [];
-
+var increment = true;
+var decrement = false;
 
 
 function keydown(ev, gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   switch (ev.keyCode) {
     case 38: // Up arrow key -> the positive rotation of joint1 around the z-axis
 
-      //for (i=0; i<24.0; i++) { 
-      //  if (g_jointAnkle1)
-      //}
+	  if(lastDown = false){
+	      if(increment = true){
+	      	increment = false;
+	      	decrement = true;
+	      } else {
+	      	increment = true;
+	      	decrement = false;
+	      }
+	  }
 
-      if (g_jointAnkle1 < 24.0 && g_jointAnkle1 >= 0 && g_jointAnkle2 > -24.0 && g_jointAnkle2 <= 0) { 
-      g_jointAnkle1 += ANKLE_STEP;
-      g_jointAnkle2 -= ANKLE_STEP;
-      } else if (g_jointAnkle1 >= -24.0 && g_jointAnkle2 <= 24.0) { 
-      g_jointAnkle1 -= ANKLE_STEP;
-      g_jointAnkle2 += ANKLE_STEP;
-      }
-    
-
-      if (g_jointArm1 < 45.0 && g_jointArm2 > -45.0) { 
-      g_jointArm1 += ARM_STEP;
-      g_jointArm2 -= ARM_STEP;
-      } else if (g_jointArm1 >= -45.0 && g_jointArm2 <= 45.0) { 
-      g_jointArm1 -= ARM_STEP;
-      g_jointArm2 += ARM_STEP;
+      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
+      	increment = false;
+      	decrement = true;
+      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
+      	increment = true;
+      	decrement = false;
       }
 
-      if (g_jointHip1 < 20.0 && g_jointHip2 > -20.0) { 
-      g_jointHip1 += HIP_STEP;
-      g_jointHip2 -= HIP_STEP;
-      } else if (g_jointHip1 >= -20.0 && g_jointHip2 <= 20.0) { 
-      g_jointHip1 -= HIP_STEP;
-      g_jointHip2 += HIP_STEP;
+   	
+   	  lastUp = true;
+   	  lastDown = false;
+
+      if (increment) { 
+      	g_jointHip1 += step/hipInterval;
+      	g_jointHip2 -= step/hipInterval;
+      } else if (decrement) { 
+      	g_jointHip1 -= step/hipInterval;
+      	g_jointHip2 += step/hipInterval;
       } 
 
-      if (g_jointKnee1 > -20.0 && g_jointKnee2 < 20.0) { 
-      g_jointKnee1 -= KNEE_STEP;
-      g_jointKnee2 += KNEE_STEP;
-      } else if (g_jointKnee1 <= 20.0 && g_jointKnee2 >= -20.0) { 
-      g_jointKnee1 += KNEE_STEP;
-      g_jointKnee2 -= KNEE_STEP;
-      }    
 
-      break;
- /*   
-    case 38: // Down arrow key -> the negative rotation of joint1 around the z-axis
-      if (g_jointAnkle1 > -22.0 && g_jointAnkle2 < 22.0) { 
-      g_jointAnkle1 -= ANKLE_STEP;
-      g_jointAnkle2 += ANKLE_STEP;
+	  if (increment) { 
+      	g_jointKnee1 -= step/kneeInterval;
+      	g_jointKnee2 += step/kneeInterval;
+      } else if (decrement) { 
+      	g_jointKnee1 += step/kneeInterval;
+      	g_jointKnee2 -= step/kneeInterval;
+      } 
+	
+	  if (increment) { 
+      	g_jointArm1 += step/armInterval;
+      	g_jointArm2 -= step/armInterval;
+      } else if (decrement) { 
+      	g_jointArm1 -= step/armInterval;
+      	g_jointArm2 += step/armInterval;
       }
 
-      if (g_jointArm1 > -45.0 && g_jointArm2 < 45.0) { 
-      g_jointArm1 -= ARM_STEP;
-      g_jointArm2 += ARM_STEP;
+	  if (increment) { 
+      	g_jointAnkle1 += step/ankleInterval;
+      	g_jointAnkle2 -= step/ankleInterval;
+      } else if (decrement) { 
+      	g_jointAnkle1 -= step/ankleInterval;
+      	g_jointAnkle2 += step/ankleInterval;
       }
 
-      if (g_jointHip1 > -20.0 && g_jointHip2 < 20.0) { 
-      g_jointHip1 -= HIP_STEP;
-      g_jointHip2 += HIP_STEP;
-      }  
+      break;
 
-      if (g_jointKnee1 < 20.0 && g_jointKnee2 > -20.0) { 
-      g_jointKnee1 += KNEE_STEP;
-      g_jointKnee2 -= KNEE_STEP;
-      }  
+    case 40: // Up arrow key -> the positive rotation of joint1 around the z-axis
+      
+      if(lastUp = false){
+	      if(increment = true){
+	      	increment = false;
+	      	decrement = true;
+	      } else{
+	      	increment = true;
+	      	decrement = false;
+	      }
+	  }
 
+	  lastDown = true;
+	  lastUp = false;
+   
+
+      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
+      	increment = true;
+      	decrement = false;
+      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
+      	increment = false;
+      	decrement = true;
+      }
+	  
+
+
+      if (increment) { 
+      	g_jointHip1 -= step/hipInterval;
+      	g_jointHip2 += step/hipInterval;
+      } else if (decrement) { 
+      	g_jointHip1 += step/hipInterval;
+      	g_jointHip2 -= step/hipInterval;
+      } 
+
+
+	  if (increment) { 
+      	g_jointKnee1 += step/kneeInterval;
+      	g_jointKnee2 -= step/kneeInterval;
+      } else if (decrement) { 
+      	g_jointKnee1 -= step/kneeInterval;
+      	g_jointKnee2 += step/kneeInterval;
+      } 
+	
+	  if (increment) { 
+      	g_jointArm1 -= step/armInterval;
+      	g_jointArm2 += step/armInterval;
+      } else if (decrement) { 
+      	g_jointArm1 += step/armInterval;
+      	g_jointArm2 -= step/armInterval;
+      }
+
+	  if (increment) { 
+      	g_jointAnkle1 -= step/ankleInterval;
+      	g_jointAnkle2 += step/ankleInterval;
+      } else if (decrement) { 
+      	g_jointAnkle1 += step/ankleInterval;
+      	g_jointAnkle2 -= step/ankleInterval;
+      }
       break;
-    case 39: // Right arrow key -> the positive rotation of arm1 around the y-axis
-      g_arm1Angle = (g_arm1Angle + ANGLE_STEP) % 360;
-      break;
-    case 37: // Left arrow key -> the negative rotation of arm1 around the y-axis
-      g_arm1Angle = (g_arm1Angle - ANGLE_STEP) % 360;
-      break;
-    case 90: // 'ｚ'key -> the positive rotation of joint2
-      g_joint2Angle = (g_joint2Angle + ANGLE_STEP) % 360;
-      break; 
-    case 88: // 'x'key -> the negative rotation of joint2
-      g_joint2Angle = (g_joint2Angle - ANGLE_STEP) % 360;
-      break;
-    case 86: // 'v'key -> the positive rotation of joint3
-      if (g_joint3Angle < 60.0)  g_joint3Angle = (g_joint3Angle + ANGLE_STEP) % 360;
-      break;
-    case 67: // 'c'key -> the nagative rotation of joint3
-      if (g_joint3Angle > -60.0) g_joint3Angle = (g_joint3Angle - ANGLE_STEP) % 360;
-      break;*/
+
     default: return; // Skip drawing at no effective action
   }
   // Draw
   draw(gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-console.log('left angle: ' + g_jointAnkle1 + 'right angle: ' + g_jointAnkle2 + '\n');
+console.log('left angle: ' + g_jointHip1 + 'right angle: ' + g_jointHip2 + '\n');
+console.log('Up: ' + lastUp + '  Down: ' + lastDown + '\n');
+
 }
 
 
@@ -202,7 +245,7 @@ function initVertexBuffers(gl){
      1.0, 0.0,-1.5, -1.0, 0.0,-1.5, -1.0, 1.0,-1.5,  1.0, 1.0,-1.5  // v4-v7-v6-v5 back
   ]);
 
-  var vertices_body = new Float32Array([  // Body(5x7x5)
+  var vertices_body = new Float32Array([  // Body(10x12x5)
      5.0, 12.0, 2.5, -5.0, 12.0, 2.5, -5.0, 0.0, 2.5,  5.0, 0.0, 2.5, // v0-v1-v2-v3 front
      5.0, 12.0, 2.5,  5.0, 0.0, 2.5,  5.0, 0.0,-2.5,  5.0, 12.0,-2.5, // v0-v3-v4-v5 right
      5.0, 12.0, 2.5,  5.0, 12.0,-2.5, -5.0, 12.0,-2.5, -5.0, 12.0, 2.5, // v0-v5-v6-v1 up
@@ -366,84 +409,79 @@ var g_modelMatrix = new Matrix4(), g_mvpMatrix = new Matrix4();
 
 function draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   // Clear color and depth buffer
+
+  var xCOM = 0.0;
+  var yCOM = 0.0; 
+  var zCOM = 0.0;
+
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-
-  // Draw a foot
-
-  g_modelMatrix.setTranslate(0.0, -13.0, 0.0);
-  g_modelMatrix.rotate(g_jointAnkle1, 1.0, 0.0, 0.0);  // Rotate around the x-axis
-  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-
-  // Draw a foot
-    
-  g_modelMatrix.setTranslate(6.0, -13.0, 0.0);
-  pushMatrix(g_modelMatrix);
-  g_modelMatrix.rotate(g_jointAnkle2, 1.0, 0.0, 0.0);  // Rotate around the x-axis
-  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-  g_modelMatrix = popMatrix();
-
-    
-  // Draw left lower halfLeg
   var footHeight = 1.0;
-  g_modelMatrix.translate(-6.0, footHeight, 0.0);     // Move onto the base
-  g_modelMatrix.rotate(g_jointKnee1, 1.0, 0.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_DOWNhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-
-  // Draw right lower halfLeg
-  g_modelMatrix.translate(6.0, 0.0, 0.0);     // Move onto the base
-  g_modelMatrix.rotate(g_jointKnee2, 1.0, 0.0, 0.0);  // Rotate around the y-axis
-  drawSegment(gl, n, g_DOWNhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-
-
-  // Draw left upper halfLeg
   var halfLegHeight = 11.0;
-  g_modelMatrix.translate(-6.0, halfLegHeight, 0.0);     // Move onto the base
-  pushMatrix(g_modelMatrix);
-  g_modelMatrix.rotate(g_jointHip1, 1.0, 0.0, 0.0);  // Rotate around the x-axis
-  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-  g_modelMatrix = popMatrix();
+  var neckHeight = 2.0;
+  var bodyHeight = 12.0;
+  var bodyWidht = 10.0;
+  var armHeight = 8.0;
 
-  // Draw right upper halfLeg
-  g_modelMatrix.translate(6.0, 0.0, 0.0);     // Move onto the base
-  pushMatrix(g_modelMatrix);
-  g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);  // Rotate around the x-axis
-  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-  g_modelMatrix = popMatrix();
-
-  // Draw body
-  g_modelMatrix.translate(-3.0, 0.0, 0.0);     // Move onto the base
-  //g_modelMatrix.rotate(, 1.0, 0.0, 0.0);  // Rotate around the y-axis
+  g_modelMatrix.setTranslate(xCOM, yCOM, zCOM);
   drawSegment(gl, n, g_bodyBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
-
-  // Draw right arm
-  //segment = -1;
-  g_modelMatrix.translate(6.0, 10.0, 0.0);       // Move to joint1
+  // Draw left total lenght
   pushMatrix(g_modelMatrix);
-  g_modelMatrix.rotate(g_jointArm1, 1.0, 0.0, 0.0);  // Rotate around the z-axis
-  drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+
+  g_modelMatrix.translate(bodyWidht/3, 0.0, 0.0);
+  g_modelMatrix.rotate(g_jointHip1, 1.0, 0.0, 0.0);
+  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
+  g_modelMatrix.rotate(g_jointKnee1, 1.0, 0.0, 0.0);
+  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
+  g_modelMatrix.rotate(g_jointAnkle1, 1.0,0.0,0.0);
+  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix = popMatrix();
+  pushMatrix(g_modelMatrix);
+
+  g_modelMatrix.translate(-bodyWidht/2, 0.0, 0.0);
+  g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);
+  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
+  g_modelMatrix.rotate(g_jointKnee2, 1.0, 0.0, 0.0);
+  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
+  g_modelMatrix.rotate(g_jointAnkle2, 1.0,0.0,0.0);
+  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix = popMatrix();
+  pushMatrix(g_modelMatrix);
+
+  g_modelMatrix.translate(0.0, bodyHeight, 0.0);
+  drawSegment(gl, n, g_neckBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix.translate(0.0, neckHeight, 0.0);
+  drawSegment(gl, n, g_headBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
+  g_modelMatrix = popMatrix();
+  pushMatrix(g_modelMatrix);
+
+  g_modelMatrix.translate(bodyWidht/2 +1.0, bodyHeight*3/4, 0.0);
+  g_modelMatrix.rotate(g_jointArm2 + 180, 1.0,0.0,0.0);
+  drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+
   g_modelMatrix = popMatrix();
 
-  // Draw left arm
-  g_modelMatrix.translate(-12.0, 0.0, 0.0);       // Move to joint1
- pushMatrix(g_modelMatrix);
-  g_modelMatrix.rotate(g_jointArm2, 1.0, 0.0, 0.0);  // Rotate around the z-axis
-  drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
-  g_modelMatrix = popMatrix();
-
-  // Draw neck
-  g_modelMatrix.translate(6.0, 2.0, 0.0);       // Move to joint1
-  //g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0);  // Rotate around the z-axis
-  drawSegment(gl, n, g_neckBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  g_modelMatrix.translate(-bodyWidht/2 -1.0, bodyHeight*3/4, 0.0);
+  g_modelMatrix.rotate(g_jointArm1 + 180, 1.0,0.0,0.0);
+  drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
 
 
-   // Draw head
-  neckHeight = 2.0;
-  g_modelMatrix.translate(0.0, neckHeight, 0.0);       // Move to joint1
-  //g_modelMatrix.rotate(g_joint1Angle, 0.0, 0.0, 1.0);  // Rotate around the z-axis
-  drawSegment(gl, n, g_headBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
 
+
+  
 }
 
 
