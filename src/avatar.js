@@ -1,30 +1,6 @@
 // MultiJointModel_segment.js (c) 2012 matsuda
 // Vertex shader program
-var VSHADER_SOURCE =
-  'attribute vec4 a_Position;\n' +
-  'attribute vec4 a_Normal;\n' +
-  'uniform mat4 u_MvpMatrix;\n' +
-  'uniform mat4 u_NormalMatrix;\n' +
-  'varying vec4 v_Color;\n' +
-  'void main() {\n' +
-  '  gl_Position = u_MvpMatrix * a_Position;\n' +
-  // The followings are some shading calculation to make the arm look three-dimensional
-  '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
-  '  vec4 color = vec4(1.0, 0.4, 0.0, 1.0);\n' +  // Robot color
-  '  vec3 normal = normalize((u_NormalMatrix * a_Normal).xyz);\n' +
-  '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
-  '  v_Color = vec4(color.rgb * nDotL + vec3(0.1), color.a);\n' +
-  '}\n';
 
-// Fragment shader program
-var FSHADER_SOURCE =
-  '#ifdef GL_ES\n' +
-  'precision mediump float;\n' +
-  '#endif\n' +
-  'varying vec4 v_Color;\n' +
-  'void main() {\n' +
-  '  gl_FragColor = v_Color;\n' +
-  '}\n';
 
 function main() {
   // Retrieve <canvas> element
@@ -74,167 +50,22 @@ function main() {
   draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
 }
 
-var step = 100.0;
-var ankleInterval = 48.0;
-var armInterval = 25.0;
-var hipInterval = 40.0;
-var kneeInterval = 40.0;
-var lastUp = false;
-var lastDown = false;
-// 1 stands for LEFT, 2 stands for RIGHT
-var g_jointAnkle1 = 0.0;   // The rotation angle of arm1 (degrees)
-var g_jointAnkle2 = 0.0; // The rotation angle of joint1 (degrees)
-var g_jointKnee1 = 0.0;  // The rotation angle of joint2 (degrees)
-var g_jointKnee2 = 0.0;  // The rotation angle of joint3 (degrees)
-var g_jointHip1 = 0.0;  // The rotation angle of joint3 (degrees)
-var g_jointHip2 = 0.0;  // The rotation angle of joint3 (degrees)
-var g_jointArm1 = 0.0;  // The rotation angle of joint3 (degrees)
-var g_jointArm2 = 0.0;  // The rotation angle of joint3 (degrees)
-var val1 = [];
-var val2 = [];
-var increment = true;
-var decrement = false;
+function getAvatarProgramLocations(gl, avatarProgram) {
+    avatarProgram.a_Position = getAttribLocation(avatarProgram, 'a_Position');
+    avatarProgram.u_MvpMatrix = getUniformLocation(avatarProgram, 'u_MvpMatrix');
+    avatarProgram.u_NormalMatrix = getUniformLocation(avatarProgram, 'u_NormalMatrix'); 
 
+    if (!avatarProgram.a_Position < 0 || !avatarProgram.u_MvpMatrix || !avatarProgram.u_NormalMatrix) {
+      console.log('Failed to get the storage location of attribute or uniform variable');
+      return;
+    }
 
-function keydown(ev, gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
-  switch (ev.keyCode) {
-    case 38: // Up arrow key -> the positive rotation of joint1 around the z-axis
-
-	  if(lastDown = false){
-	      if(increment = true){
-	      	increment = false;
-	      	decrement = true;
-	      } else {
-	      	increment = true;
-	      	decrement = false;
-	      }
-	  }
-
-      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
-      	increment = false;
-      	decrement = true;
-      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
-      	increment = true;
-      	decrement = false;
-      }
-
-   	
-   	  lastUp = true;
-   	  lastDown = false;
-
-      if (increment) { 
-      	g_jointHip1 += step/hipInterval;
-      	g_jointHip2 -= step/hipInterval;
-      } else if (decrement) { 
-      	g_jointHip1 -= step/hipInterval;
-      	g_jointHip2 += step/hipInterval;
-      } 
-
-
-	  if (increment) { 
-      	g_jointKnee1 -= step/kneeInterval;
-      	g_jointKnee2 += step/kneeInterval;
-      } else if (decrement) { 
-      	g_jointKnee1 += step/kneeInterval;
-      	g_jointKnee2 -= step/kneeInterval;
-      } 
-	
-	  if (increment) { 
-      	g_jointArm1 += step/armInterval;
-      	g_jointArm2 -= step/armInterval;
-      } else if (decrement) { 
-      	g_jointArm1 -= step/armInterval;
-      	g_jointArm2 += step/armInterval;
-      }
-
-	  if (increment) { 
-      	g_jointAnkle1 += step/ankleInterval;
-      	g_jointAnkle2 -= step/ankleInterval;
-      } else if (decrement) { 
-      	g_jointAnkle1 -= step/ankleInterval;
-      	g_jointAnkle2 += step/ankleInterval;
-      }
-
-      break;
-
-    case 40: // Up arrow key -> the positive rotation of joint1 around the z-axis
-      
-      if(lastUp = false){
-	      if(increment = true){
-	      	increment = false;
-	      	decrement = true;
-	      } else{
-	      	increment = true;
-	      	decrement = false;
-	      }
-	  }
-
-	  lastDown = true;
-	  lastUp = false;
-   
-
-      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
-      	increment = true;
-      	decrement = false;
-      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
-      	increment = false;
-      	decrement = true;
-      }
-	  
-
-
-      if (increment) { 
-      	g_jointHip1 -= step/hipInterval;
-      	g_jointHip2 += step/hipInterval;
-      } else if (decrement) { 
-      	g_jointHip1 += step/hipInterval;
-      	g_jointHip2 -= step/hipInterval;
-      } 
-
-
-	  if (increment) { 
-      	g_jointKnee1 += step/kneeInterval;
-      	g_jointKnee2 -= step/kneeInterval;
-      } else if (decrement) { 
-      	g_jointKnee1 -= step/kneeInterval;
-      	g_jointKnee2 += step/kneeInterval;
-      } 
-	
-	  if (increment) { 
-      	g_jointArm1 -= step/armInterval;
-      	g_jointArm2 += step/armInterval;
-      } else if (decrement) { 
-      	g_jointArm1 += step/armInterval;
-      	g_jointArm2 -= step/armInterval;
-      }
-
-	  if (increment) { 
-      	g_jointAnkle1 -= step/ankleInterval;
-      	g_jointAnkle2 += step/ankleInterval;
-      } else if (decrement) { 
-      	g_jointAnkle1 += step/ankleInterval;
-      	g_jointAnkle2 -= step/ankleInterval;
-      }
-      break;
-
-    default: return; // Skip drawing at no effective action
-  }
-  // Draw
-  draw(gl, o, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-console.log('left angle: ' + g_jointHip1 + 'right angle: ' + g_jointHip2 + '\n');
-console.log('Up: ' + lastUp + '  Down: ' + lastDown + '\n');
+    return avatarProgram;
 
 }
 
 
-var g_footBuffer = null;     // Buffer object for a base
-var g_bodyBuffer = null;     // Buffer object for a base
-var g_halfLegBuffer = null;     // Buffer object for a base
-var g_armBuffer = null;     // Buffer object for arm1
-var g_headBuffer = null;     // Buffer object for a palm
-var g_neckBuffer = null;   // Buffer object for fingers
-
-function initVertexBuffers(gl){
+function initAvatarVertexBuffers(gl){
   // Vertex coordinate (prepare coordinates of cuboids for all segments)
   var vertices_foot = new Float32Array([ // Foot(2x1x3)
      1.0, 1.0, 5.5, -1.0, 1.0, 5.5, -1.0, 0.0, 5.5,  1.0, 0.0, 5.5, // v0-v1-v2-v3 front
@@ -327,17 +158,26 @@ function initVertexBuffers(gl){
     20,21,22,  20,22,23     // back
   ]);
 
+  var o = new Object();
+
+
   // Write coords to buffers, but don't assign to attribute variables
-  g_footBuffer = initArrayBufferForLaterUse(gl, vertices_foot, 3, gl.FLOAT);
-  g_bodyBuffer = initArrayBufferForLaterUse(gl, vertices_body, 3, gl.FLOAT);
-  g_UPhalfLegBuffer = initArrayBufferForLaterUse(gl, vertices_UPhalfLeg, 3, gl.FLOAT);
-  g_DOWNhalfLegBuffer = initArrayBufferForLaterUse(gl, vertices_DOWNhalfLeg, 3, gl.FLOAT);
-  g_armBuffer = initArrayBufferForLaterUse(gl, vertices_arm, 3, gl.FLOAT);
-  g_headBuffer = initArrayBufferForLaterUse(gl, vertices_head, 3, gl.FLOAT);
-  g_neckBuffer = initArrayBufferForLaterUse(gl, vertices_neck, 3, gl.FLOAT);
-  if (!g_footBuffer || !g_bodyBuffer || !g_UPhalfLegBuffer || !g_DOWNhalfLegBuffer || 
-    !g_armBuffer || !g_headBuffer || !g_neckBuffer) return -1;
+  o.g_footBuffer = initArrayBufferForLaterUse(gl, vertices_foot, 3, gl.FLOAT);
+  o.g_bodyBuffer = initArrayBufferForLaterUse(gl, vertices_body, 3, gl.FLOAT);
+  o.g_UPhalfLegBuffer = initArrayBufferForLaterUse(gl, vertices_UPhalfLeg, 3, gl.FLOAT);
+  o.g_DOWNhalfLegBuffer = initArrayBufferForLaterUse(gl, vertices_DOWNhalfLeg, 3, gl.FLOAT);
+  o.g_armBuffer = initArrayBufferForLaterUse(gl, vertices_arm, 3, gl.FLOAT);
+  o.g_headBuffer = initArrayBufferForLaterUse(gl, vertices_head, 3, gl.FLOAT);
+  o.g_neckBuffer = initArrayBufferForLaterUse(gl, vertices_neck, 3, gl.FLOAT);
+  
+  o.indexBuffer = initElementArrayBufferForLaterUse(gl, indices, gl.UNSIGNED_BYTE);
+  o.numIndices = indices.length;
+
+
+  if (!o.g_footBuffer || !o.g_bodyBuffer || !o.g_UPhalfLegBuffer || !o.g_DOWNhalfLegBuffer || 
+    !o.g_armBuffer || !o.g_headBuffer || !o.g_neckBuffer || !o.indexBuffer) return -1;
   // Write normals to a buffer, assign it to a_Normal and enable it
+  
   if (!initArrayBuffer(gl, 'a_Normal', normals, 3, gl.FLOAT)) return -1;
 
   // Write the indices to the buffer object
@@ -346,10 +186,11 @@ function initVertexBuffers(gl){
     console.log('Failed to create the buffer object');
     return -1;
   }
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+  
+  gl.bindBuffer(gl.ARRAY_BUFFER, null);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, null);
 
-  return indices.length;
+  return o;
 }
 
 function initArrayBufferForLaterUse(gl, data, num, type){
@@ -402,12 +243,7 @@ function popMatrix() { // Retrieve the matrix from the array
   return g_matrixStack.pop();
 }
 
-// Coordinate transformation matrix
-var g_modelMatrix = new Matrix4(), g_mvpMatrix = new Matrix4();
-
-
-
-function draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
+function drawAvatar(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   // Clear color and depth buffer
 
   var xCOM = 0.0;
@@ -477,16 +313,7 @@ function draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
   g_modelMatrix.translate(-bodyWidht/2 -1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm1 + 180, 1.0,0.0,0.0);
   drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-
-
-
-
-  
 }
-
-
-
-var g_normalMatrix = new Matrix4();  // Coordinate transformation matrix for normals
 
 // Draw segments
 function drawSegment(gl, n, buffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
