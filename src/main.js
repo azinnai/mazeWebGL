@@ -115,7 +115,8 @@ function main() {
     console.log('Failed to get the rendering context for WebGL');
     return;
   }
-
+ 
+ 
   // Initialize shaders
   var skyProgram = createProgram(gl,SKYBOX_VSHADER_SOURCE, SKYBOX_FSHADER_SOURCE);
   var texProgram = createProgram(gl, TEXTURE_VSHADER_SOURCE, TEXTURE_FSHADER_SOURCE);

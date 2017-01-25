@@ -204,68 +204,69 @@ function drawAvatar(gl, program, o) {
 
   // qui è importante capire dove mettere il robot, probabilmente all'inizio non si vedrà
   
-  g_modelMatrix.setTranslate(0.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_bodyBuffer, program); // Draw
+  g_modelMatrix.setTranslate(0.0, 4.0, 0.0);
+  g_modelMatrix.scale(0.3,0.3,-0.3);
+  drawSegment(gl, n, o.g_bodyBuffer, o.indexBuffer, program); // Draw
 
   // Draw left total lenght
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(bodyWidht/3, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip1, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
   g_modelMatrix.rotate(g_jointKnee1, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
   g_modelMatrix.rotate(g_jointAnkle1, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_footBuffer, program); // Draw
+  drawSegment(gl, n, o.g_footBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(-bodyWidht/2, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
   g_modelMatrix.rotate(g_jointKnee2, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
   g_modelMatrix.rotate(g_jointAnkle2, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_footBuffer, program); // Draw
+  drawSegment(gl, n, o.g_footBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(0.0, bodyHeight, 0.0);
-  drawSegment(gl, n, o.g_neckBuffer, program); // Draw
+  drawSegment(gl, n, o.g_neckBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, neckHeight, 0.0);
-  drawSegment(gl, n, o.g_headBuffer, program); // Draw
+  drawSegment(gl, n, o.g_headBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(bodyWidht/2 +1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm2 + 180, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_armBuffer, program); // Draw
+  drawSegment(gl, n, o.g_armBuffer, o.indexBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
 
   g_modelMatrix.translate(-bodyWidht/2 -1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm1 + 180, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_armBuffer, program); // Draw
+  drawSegment(gl, n, o.g_armBuffer, o.indexBuffer, program); // Draw
 
 }
 
 // Draw segments
-function drawSegment(gl, n, buffer, program) {
+function drawSegment(gl, n, buffer, indexBuffer, program) {
 
   initAttributeVariable(gl, program.a_Position, buffer);
-
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   // Calculate the model view project matrix and pass it to u_MvpMatrix
   g_cameraMatrix.setTranslate(xPos,yPos,zPos);
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
