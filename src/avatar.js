@@ -1,59 +1,7 @@
-// MultiJointModel_segment.js (c) 2012 matsuda
-// Vertex shader program
-
-
-function main() {
-  // Retrieve <canvas> element
-  var canvas = document.getElementById('webgl');
-
-  // Get the rendering context for WebGL
-  var gl = getWebGLContext(canvas);
-  if (!gl) {
-    console.log('Failed to get the rendering context for WebGL');
-    return;
-  }
-
-  // Initialize shaders
-  if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) {
-    console.log('Failed to intialize shaders.');
-    return;
-  }
-
-  // Set the vertex information
-  var n = initVertexBuffers(gl);
-  if (n < 0) {
-    console.log('Failed to set the vertex information');
-    return;
-  }
-
-  // Set the clear color and enable the depth test
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  gl.enable(gl.DEPTH_TEST);
-
-  // Get the storage locations of attribute and uniform variables
-  var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
-  var u_MvpMatrix = gl.getUniformLocation(gl.program, 'u_MvpMatrix');
-  var u_NormalMatrix = gl.getUniformLocation(gl.program, 'u_NormalMatrix');
-  if (a_Position < 0 || !u_MvpMatrix || !u_NormalMatrix) {
-    console.log('Failed to get the storage location of attribute or uniform variable');
-    return;
-  }
-
-  // Calculate the view projection matrix
-  var viewProjMatrix = new Matrix4();
-  viewProjMatrix.setPerspective(50.0, canvas.width / canvas.height, 1.0, 100.0);
-  viewProjMatrix.lookAt(20.0, 30.0, 30.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-
-  // Register the event handler to be called on key press
-  document.onkeydown = function(ev){ keydown(ev, gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); };
-
-  draw(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
-}
-
 function getAvatarProgramLocations(gl, avatarProgram) {
-    avatarProgram.a_Position = getAttribLocation(avatarProgram, 'a_Position');
-    avatarProgram.u_MvpMatrix = getUniformLocation(avatarProgram, 'u_MvpMatrix');
-    avatarProgram.u_NormalMatrix = getUniformLocation(avatarProgram, 'u_NormalMatrix'); 
+    avatarProgram.a_Position = gl.getAttribLocation(avatarProgram, 'a_Position');
+    avatarProgram.u_MvpMatrix = gl.getUniformLocation(avatarProgram, 'u_MvpMatrix');
+    avatarProgram.u_NormalMatrix = gl.getUniformLocation(avatarProgram, 'u_NormalMatrix'); 
 
     if (!avatarProgram.a_Position < 0 || !avatarProgram.u_MvpMatrix || !avatarProgram.u_NormalMatrix) {
       console.log('Failed to get the storage location of attribute or uniform variable');
@@ -169,26 +117,18 @@ function initAvatarVertexBuffers(gl){
   o.g_armBuffer = initArrayBufferForLaterUse(gl, vertices_arm, 3, gl.FLOAT);
   o.g_headBuffer = initArrayBufferForLaterUse(gl, vertices_head, 3, gl.FLOAT);
   o.g_neckBuffer = initArrayBufferForLaterUse(gl, vertices_neck, 3, gl.FLOAT);
-  
+  o.normalBuffer = initArrayBufferForLaterUse(gl, normals, 3,gl.FLOAT);
+ 
   o.indexBuffer = initElementArrayBufferForLaterUse(gl, indices, gl.UNSIGNED_BYTE);
   o.numIndices = indices.length;
 
 
   if (!o.g_footBuffer || !o.g_bodyBuffer || !o.g_UPhalfLegBuffer || !o.g_DOWNhalfLegBuffer || 
     !o.g_armBuffer || !o.g_headBuffer || !o.g_neckBuffer || !o.indexBuffer) return -1;
-  // Write normals to a buffer, assign it to a_Normal and enable it
   
-  if (!initArrayBuffer(gl, 'a_Normal', normals, 3, gl.FLOAT)) return -1;
 
-  // Write the indices to the buffer object
-  var indexBuffer = gl.createBuffer();
-  if (!indexBuffer) {
-    console.log('Failed to create the buffer object');
-    return -1;
-  }
-  
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, null);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 
   return o;
 }
@@ -243,14 +183,15 @@ function popMatrix() { // Retrieve the matrix from the array
   return g_matrixStack.pop();
 }
 
-function drawAvatar(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
+function drawAvatar(gl, program, o) {
   // Clear color and depth buffer
+  gl.useProgram(program);
 
   var xCOM = 0.0;
   var yCOM = 0.0; 
   var zCOM = 0.0;
 
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   var footHeight = 1.0;
   var halfLegHeight = 11.0;
@@ -259,78 +200,86 @@ function drawAvatar(gl, n, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatr
   var bodyWidht = 10.0;
   var armHeight = 8.0;
 
-  g_modelMatrix.setTranslate(xCOM, yCOM, zCOM);
-  drawSegment(gl, n, g_bodyBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix); // Draw
+  var n = o.numIndices;
+
+  // qui è importante capire dove mettere il robot, probabilmente all'inizio non si vedrà
+  
+  g_modelMatrix.setTranslate(0.0, 0.0, 0.0);
+  drawSegment(gl, n, o.g_bodyBuffer, program); // Draw
 
   // Draw left total lenght
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(bodyWidht/3, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip1, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
   g_modelMatrix.rotate(g_jointKnee1, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
   g_modelMatrix.rotate(g_jointAnkle1, 1.0,0.0,0.0);
-  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_footBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(-bodyWidht/2, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
   g_modelMatrix.rotate(g_jointKnee2, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, g_UPhalfLegBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_UPhalfLegBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
   g_modelMatrix.rotate(g_jointAnkle2, 1.0,0.0,0.0);
-  drawSegment(gl, n, g_footBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_footBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(0.0, bodyHeight, 0.0);
-  drawSegment(gl, n, g_neckBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_neckBuffer, program); // Draw
 
   g_modelMatrix.translate(0.0, neckHeight, 0.0);
-  drawSegment(gl, n, g_headBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_headBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(bodyWidht/2 +1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm2 + 180, 1.0,0.0,0.0);
-  drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_armBuffer, program); // Draw
 
   g_modelMatrix = popMatrix();
 
   g_modelMatrix.translate(-bodyWidht/2 -1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm1 + 180, 1.0,0.0,0.0);
-  drawSegment(gl, n, g_armBuffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix);
+  drawSegment(gl, n, o.g_armBuffer, program); // Draw
+
 }
 
 // Draw segments
-function drawSegment(gl, n, buffer, viewProjMatrix, a_Position, u_MvpMatrix, u_NormalMatrix) {
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  // Assign the buffer object to the attribute variable
-  gl.vertexAttribPointer(a_Position, buffer.num, buffer.type, false, 0, 0);
-  // Enable the assignment of the buffer object to the attribute variable
-  gl.enableVertexAttribArray(a_Position);
+function drawSegment(gl, n, buffer, program) {
+
+  initAttributeVariable(gl, program.a_Position, buffer);
 
   // Calculate the model view project matrix and pass it to u_MvpMatrix
-  g_mvpMatrix.set(viewProjMatrix);
-  g_mvpMatrix.multiply(g_modelMatrix);
-  gl.uniformMatrix4fv(u_MvpMatrix, false, g_mvpMatrix.elements);
+  g_cameraMatrix.setTranslate(xPos,yPos,zPos);
+  g_cameraMatrix.rotate(yaw, 0, 1, 0);
+  g_cameraMatrix.rotate(pitch, 1, 0, 0);
+  g_viewMatrix.setInverseOf(g_cameraMatrix);
+
+  //generating modelViewProjectionMatrix and passing it to the uniform variable
+  g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
+
+  gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
   // Calculate matrix for normal and pass it to u_NormalMatrix
   g_normalMatrix.setInverseOf(g_modelMatrix);
   g_normalMatrix.transpose();
-  gl.uniformMatrix4fv(u_NormalMatrix, false, g_normalMatrix.elements);
+  gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
   // Draw
   gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
 }

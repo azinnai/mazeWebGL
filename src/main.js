@@ -129,7 +129,7 @@ function main() {
   //retrieve locations of shader variables
   skyProgram = getSkyProgramLocations(gl, skyProgram);
   texProgram = getTexProgramLocations(gl, texProgram);
-  avatarProgram = getAvatarProgramLocation(gl, avatarProgram);
+  avatarProgram = getAvatarProgramLocations(gl, avatarProgram);
 
   
   //lights in the scene, better to put in a function
@@ -201,9 +201,11 @@ function main() {
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture);
-  
+  	drawAvatar(gl, avatarProgram, avatar);
+
     animate();
   };
+
   tick();
 }
 
