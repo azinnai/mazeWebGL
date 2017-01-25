@@ -100,7 +100,7 @@ var TEXTURE_FSHADER_SOURCE =
 
   //ambient light
   '  vec3 ambient = 0.8 * u_AmbientLight * color.rgb;\n' +
-  '  if(gl_FrontFacing){ gl_FragColor = vec4(diffuse + 0.2*ambient, color.a);}\n' +
+  '  if(gl_FrontFacing){ gl_FragColor = vec4(diffuse + 0.6*ambient, color.a);}\n' +
   
   '  else {gl_FragColor = vec4(1.0,0.0,0.0,1.0);}\n' +
   '}\n';
@@ -180,7 +180,7 @@ function main() {
     'resources/cubemap/negy.jpg',
     'resources/cubemap/posz.jpg',
     'resources/cubemap/negz.jpg'
-    )
+    );
   if(!cubeMapTexture){
     console.log('failed to initialize sky texture. ')
   }
@@ -188,23 +188,25 @@ function main() {
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(1.0, 1.0, 1.0, 1.0);
 
-  g_projMatrix.setPerspective(50.0, canvas.width/canvas.height, 0.02, 400.0);
+  g_projMatrix.setPerspective(40.0, canvas.width/canvas.height, 0.02, 400.0);
 
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
 
   var tick = function() {
-    window.requestAnimationFrame(tick, canvas);
-  
+    
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear color and depth buffers
+
     handleKeys();
 
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear color and depth buffers
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture);
-  	drawAvatar(gl, avatarProgram, avatar);
-
+    drawAvatar(gl, avatarProgram, avatar);
     animate();
+
+    window.requestAnimationFrame(tick, canvas);
+
   };
 
   tick();

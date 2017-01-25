@@ -204,8 +204,10 @@ function drawAvatar(gl, program, o) {
 
   // qui è importante capire dove mettere il robot, probabilmente all'inizio non si vedrà
   
-  g_modelMatrix.setTranslate(0.0, 4.0, 0.0);
-  g_modelMatrix.scale(0.3,0.3,-0.3);
+  g_modelMatrix.setTranslate(xPos, yPos-0.5, zPos);
+  g_modelMatrix.translate(-3.0*Math.sin(degToRad(yaw)), 0.0, -3.0*Math.cos(degToRad(yaw)));
+  g_modelMatrix.rotate(yaw, 0.0, 1.0, 0.0);
+  g_modelMatrix.scale(0.04,0.04,-0.04);
   drawSegment(gl, n, o.g_bodyBuffer, o.indexBuffer, program); // Draw
 
   // Draw left total lenght
@@ -226,7 +228,7 @@ function drawAvatar(gl, program, o) {
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
-  g_modelMatrix.translate(-bodyWidht/2, 0.0, 0.0);
+  g_modelMatrix.translate(-bodyWidht/3, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);
   drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
 
