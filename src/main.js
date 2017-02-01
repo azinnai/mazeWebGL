@@ -14,7 +14,7 @@ var AVATAR_VSHADER_SOURCE =
   '  vec4 color = vec4(1.0, 0.4, 0.0, 1.0);\n' +  // Robot color
   '  vec3 normal = normalize((u_NormalMatrix * a_Normal).xyz);\n' +
   '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
-  '  v_Color = vec4(color.rgb * nDotL + vec3(0.1), color.a);\n' +
+  '  v_Color = vec4(color.rgb * nDotL + vec3(0.1)*0.6, color.a);\n' +
   '}\n';
 
 // Fragment shader program
@@ -33,7 +33,7 @@ var SKYBOX_VSHADER_SOURCE = " \
   varying vec3 vpos ;\n\
   void main ( void )\n\
   {\n\
-    vpos = normalize ( a_Position ) ;\n\
+    vpos = a_Position;\n\
     gl_Position = u_MvpMatrix * vec4 (a_Position , 1.0);\n \
   }";
 
@@ -43,8 +43,8 @@ var SKYBOX_FSHADER_SOURCE = " \
   varying vec3 vpos ;\n\
   void main( void )\n\
   {\n\
-    vec3 color = textureCube(u_CubeMap, normalize(vpos)).rgb;\n \
-    gl_FragColor = vec4(0.5*color, 1.0) ;\n \
+    vec3 color = textureCube(u_CubeMap, vpos).rgb;\n \
+    gl_FragColor = vec4(0.2*color, 1.0) ;\n \
   } ";
 // Vertex shader for texture drawing
 var TEXTURE_VSHADER_SOURCE =
@@ -100,9 +100,15 @@ var TEXTURE_FSHADER_SOURCE =
 
   //ambient light
   '  vec3 ambient = 0.8 * u_AmbientLight * color.rgb;\n' +
-  '  if(gl_FrontFacing){ gl_FragColor = vec4(diffuse + 0.6*ambient, color.a);}\n' +
-  
-  '  else {gl_FragColor = vec4(1.0,0.0,0.0,1.0);}\n' +
+    //directional light
+  '  vec3 colorDirectionalLight = vec3(1.0, 1.0, 1.0);\n' +  // Robot color
+  '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
+  '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
+  '  vec3 directional = nDotL*colorDirectionalLight*color.rgb;\n' +
+
+  //'  if(gl_FrontFacing){ gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);}\n' +
+  //'  else {gl_FragColor = vec4(1.0,0.0,0.0,1.0);}\n' +
+  '    gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
   '}\n';
 
 function main() {
@@ -118,9 +124,9 @@ function main() {
  
  
   // Initialize shaders
-  var skyProgram = createProgram(gl,SKYBOX_VSHADER_SOURCE, SKYBOX_FSHADER_SOURCE);
+  var skyProgram = createProgram(gl, SKYBOX_VSHADER_SOURCE, SKYBOX_FSHADER_SOURCE);
   var texProgram = createProgram(gl, TEXTURE_VSHADER_SOURCE, TEXTURE_FSHADER_SOURCE);
-  var avatarProgram = createProgram(gl, AVATAR_VSHADER_SOURCE, AVATAR_FSHADER_SOURCE);
+  var avatarProgram = createProgram(gl, TEXTURE_VSHADER_SOURCE, TEXTURE_FSHADER_SOURCE);
   
   if (!texProgram || !skyProgram || !avatarProgram) {
     console.log('Failed to intialize shaders.');
@@ -130,7 +136,7 @@ function main() {
   //retrieve locations of shader variables
   skyProgram = getSkyProgramLocations(gl, skyProgram);
   texProgram = getTexProgramLocations(gl, texProgram);
-  avatarProgram = getAvatarProgramLocations(gl, avatarProgram);
+  avatarProgram = getTexProgramLocations(gl, avatarProgram);
 
   
   //lights in the scene, better to put in a function
@@ -142,7 +148,7 @@ function main() {
 
   var mazeWalls = initMazeVertexBuffers(gl);
 
-  var halfFloorSideLength = 200.0;
+  var halfFloorSideLength = 400.0;
   var floor = initFloorVertexBuffers(gl, halfFloorSideLength);
   if (!floor){
     console.log('Failed to set floor vertex information');
@@ -161,7 +167,7 @@ function main() {
 
 
   // Set texture
-  var mazeWallTexture = init2DTexture(gl, texProgram, 'resources/wall.jpg');
+  var mazeWallTexture = init2DTexture(gl, texProgram, 'resources/wallstone.jpg');
   if (!mazeWallTexture) {
     console.log('Failed to intialize the cube texture.');
     return;
@@ -173,8 +179,16 @@ function main() {
     return;
   }
 
+  //da inserire la texture
+  var avatarTexture = init2DTexture(gl, texProgram, 'resources/avatarTex.jpg');
+  if (!floorTexture) {
+    console.log('Failed to intialize the floor texture.');
+    return;
+  }
+
+
   var cubeMapTexture = createCubeMap(gl,
-    'resources/cubemap/posx.jpg',
+    'resources/cubemap/posx.jpg', 
     'resources/cubemap/negx.jpg',
     'resources/cubemap/posy.jpg',
     'resources/cubemap/negy.jpg',
@@ -186,7 +200,7 @@ function main() {
   }
   // Set the clear color and enable the depth test
   gl.enable(gl.DEPTH_TEST);
-  gl.clearColor(1.0, 1.0, 1.0, 1.0);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   g_projMatrix.setPerspective(40.0, canvas.width/canvas.height, 0.02, 400.0);
 
@@ -202,7 +216,7 @@ function main() {
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture);
-    drawAvatar(gl, avatarProgram, avatar);
+    drawTexAvatar(gl, avatarProgram, avatar, avatarTexture);
     animate();
 
     window.requestAnimationFrame(tick, canvas);

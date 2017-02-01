@@ -87,7 +87,7 @@ function initFloorVertexBuffers(gl, halfLength) {
     0.0,1.0,0.0,
     0.0,1.0,0.0,
     ]);
-  halfLength = 0.5*halfLength;
+  halfLength = 0.1*halfLength;
   var texCoords = new Float32Array([   // Texture coordinates
      0.0, 2*halfLength,   2*halfLength, 2*halfLength,   0.0, 0.0,   2*halfLength, 0.0,    // v0-v1-v2-v3 front
   ]);
@@ -139,8 +139,8 @@ function initCubeVertexBuffers(gl, xUnits, yUnits) {
      0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0      // v4-v7-v6-v5 back
   ]);
 
-  xUnits = 0.5*xUnits;
-  yUnits = 0.5*yUnits; 
+  xUnits = 0.2*xUnits;
+  yUnits = 0.2*yUnits; 
   var texCoords = new Float32Array([   // Texture coordinates
      2*xUnits, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2*xUnits, 0.0,    // v0-v1-v2-v3 front
      0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,   2.0, 2*yUnits,    // v0-v3-v4-v5 right

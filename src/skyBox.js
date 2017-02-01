@@ -1,5 +1,7 @@
 function getSkyProgramLocations(gl, skyProgram){
  // Get storage locations of attribute and uniform variables in program object for single color drawing
+  gl.useProgram(skyProgram);
+
   skyProgram.a_Position = gl.getAttribLocation(skyProgram, 'a_Position');
   skyProgram.u_MvpMatrix = gl.getUniformLocation(skyProgram, 'u_MvpMatrix');
   skyProgram.u_CubeMap = gl.getUniformLocation(skyProgram, 'u_CubeMap');
@@ -57,9 +59,10 @@ function createCubeMap(gl, posx, negx, posy, negy, posz, negz) {
   loadCubeFace(gl, texture, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, posz);
   loadCubeFace(gl, texture, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, negz);
 
+
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-  //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
@@ -70,6 +73,8 @@ function loadCubeFace(gl, texture, face, path) {
   var imgdata = new Image();
   imgdata.onload = function () {
     setCubeFace(gl, texture, face, imgdata);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 
+
   }
   imgdata.src = path;
 }

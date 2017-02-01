@@ -1,4 +1,6 @@
 function getAvatarProgramLocations(gl, avatarProgram) {
+    gl.useProgram(avatarProgram);
+    
     avatarProgram.a_Position = gl.getAttribLocation(avatarProgram, 'a_Position');
     avatarProgram.u_MvpMatrix = gl.getUniformLocation(avatarProgram, 'u_MvpMatrix');
     avatarProgram.u_NormalMatrix = gl.getUniformLocation(avatarProgram, 'u_NormalMatrix'); 
@@ -87,15 +89,19 @@ function initAvatarVertexBuffers(gl){
      0.0, 0.0,-1.0,  0.0, 0.0,-1.0,  0.0, 0.0,-1.0,  0.0, 0.0,-1.0  // v4-v7-v6-v5 back
   ]);
 
-  // Normal
-  var normals = new Float32Array([
-     0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0, // v0-v1-v2-v3 front
-     1.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 0.0, // v0-v3-v4-v5 right
-     0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0, // v0-v5-v6-v1 up
-    -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, // v1-v6-v7-v2 left
-     0.0,-1.0, 0.0,  0.0,-1.0, 0.0,  0.0,-1.0, 0.0,  0.0,-1.0, 0.0, // v7-v4-v3-v2 down
-     0.0, 0.0,-1.0,  0.0, 0.0,-1.0,  0.0, 0.0,-1.0,  0.0, 0.0,-1.0  // v4-v7-v6-v5 back
+  xUnits = 0.2;
+  yUnits = 0.2; 
+
+  var texCoords = new Float32Array([   // Texture coordinates
+     2*xUnits, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2*xUnits, 0.0,    // v0-v1-v2-v3 front
+     0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,   2.0, 2*yUnits,    // v0-v3-v4-v5 right
+     2*xUnits, 0.0,   2*xUnits, 2.0,   0.0, 2.0,   0.0, 0.0,    // v0-v5-v6-v1 up
+     2.0, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,    // v1-v6-v7-v2 left
+     0.0, 0.0,   2*xUnits, 0.0,   2*xUnits, 2.0,   0.0, 2.0,    // v7-v4-v3-v2 down
+     0.0, 0.0,   2*xUnits, 0.0,   2*xUnits, 2*yUnits,   0.0, 2*yUnits     // v4-v7-v6-v5 back
   ]);
+
+
   // Indices of the vertices
   var indices = new Uint8Array([
      0, 1, 2,   0, 2, 3,    // front
@@ -119,12 +125,14 @@ function initAvatarVertexBuffers(gl){
   o.g_neckBuffer = initArrayBufferForLaterUse(gl, vertices_neck, 3, gl.FLOAT);
   o.normalBuffer = initArrayBufferForLaterUse(gl, normals, 3,gl.FLOAT);
  
+  o.texCoordBuffer = initArrayBufferForLaterUse(gl, texCoords, 2, gl.FLOAT);
+
   o.indexBuffer = initElementArrayBufferForLaterUse(gl, indices, gl.UNSIGNED_BYTE);
   o.numIndices = indices.length;
 
 
   if (!o.g_footBuffer || !o.g_bodyBuffer || !o.g_UPhalfLegBuffer || !o.g_DOWNhalfLegBuffer || 
-    !o.g_armBuffer || !o.g_headBuffer || !o.g_neckBuffer || !o.indexBuffer) return -1;
+    !o.g_armBuffer || !o.g_headBuffer || !o.g_neckBuffer || !o.indexBuffer || !o.texCoordBuffer) return -1;
   
 
   gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -183,15 +191,9 @@ function popMatrix() { // Retrieve the matrix from the array
   return g_matrixStack.pop();
 }
 
-function drawAvatar(gl, program, o) {
+function drawTexAvatar(gl, program, o, texture) {
   // Clear color and depth buffer
   gl.useProgram(program);
-
-  var xCOM = 0.0;
-  var yCOM = 0.0; 
-  var zCOM = 0.0;
-
-  //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   var footHeight = 1.0;
   var halfLegHeight = 11.0;
@@ -201,6 +203,9 @@ function drawAvatar(gl, program, o) {
   var armHeight = 8.0;
 
   var n = o.numIndices;
+  var normals = o.normalBuffer;
+  var texCoords = o.texCoordBuffer;
+  var index = o.indexBuffer; 
 
   // qui è importante capire dove mettere il robot, probabilmente all'inizio non si vedrà
   
@@ -208,67 +213,81 @@ function drawAvatar(gl, program, o) {
   g_modelMatrix.translate(-3.0*Math.sin(degToRad(yaw)), 0.0, -3.0*Math.cos(degToRad(yaw)));
   g_modelMatrix.rotate(yaw, 0.0, 1.0, 0.0);
   g_modelMatrix.scale(0.04,0.04,-0.04);
-  drawSegment(gl, n, o.g_bodyBuffer, o.indexBuffer, program); // Draw
-
+  drawPartAvatar(gl, program, o.g_bodyBuffer, normals, texCoords, index, texture, n);
+  
   // Draw left total lenght
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(bodyWidht/3, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip1, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
-
+  drawPartAvatar(gl, program, o.g_UPhalfLegBuffer, normals, texCoords, index, texture, n);
+  
   g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
   g_modelMatrix.rotate(g_jointKnee1, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
-
+  drawPartAvatar(gl, program, o.g_UPhalfLegBuffer, normals, texCoords, index, texture, n);
+  
   g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
   g_modelMatrix.rotate(g_jointAnkle1, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_footBuffer, o.indexBuffer, program); // Draw
-
+  drawPartAvatar(gl, program, o.g_footBuffer, normals, texCoords, index, texture, n);
+  
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(-bodyWidht/3, 0.0, 0.0);
   g_modelMatrix.rotate(g_jointHip2, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_UPhalfLegBuffer, normals, texCoords, index, texture, n);
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2, 0.0);
   g_modelMatrix.rotate(g_jointKnee2, 1.0, 0.0, 0.0);
-  drawSegment(gl, n, o.g_UPhalfLegBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_UPhalfLegBuffer, normals, texCoords, index, texture, n);
 
   g_modelMatrix.translate(0.0, -halfLegHeight/2 -1.0, 0.0);
   g_modelMatrix.rotate(g_jointAnkle2, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_footBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_footBuffer, normals, texCoords, index, texture, n);
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(0.0, bodyHeight, 0.0);
-  drawSegment(gl, n, o.g_neckBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_neckBuffer, normals, texCoords, index, texture, n);
 
   g_modelMatrix.translate(0.0, neckHeight, 0.0);
-  drawSegment(gl, n, o.g_headBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_headBuffer, normals, texCoords, index, texture, n);
 
   g_modelMatrix = popMatrix();
   pushMatrix(g_modelMatrix);
 
   g_modelMatrix.translate(bodyWidht/2 +1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm2 + 180, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_armBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_armBuffer, normals, texCoords, index, texture, n);
 
   g_modelMatrix = popMatrix();
 
   g_modelMatrix.translate(-bodyWidht/2 -1.0, bodyHeight*3/4, 0.0);
   g_modelMatrix.rotate(g_jointArm1 + 180, 1.0,0.0,0.0);
-  drawSegment(gl, n, o.g_armBuffer, o.indexBuffer, program); // Draw
+  drawPartAvatar(gl, program, o.g_armBuffer, normals, texCoords, index, texture, n);
 
 }
 
+  function drawPartAvatar(gl, program, buffer, normals, texCoords, index, texture, n){
+    
+    initAttributeVariable(gl, program.a_Position, buffer);  // Vertex coordinates
+    initAttributeVariable(gl, program.a_Normal, normals);    // Normal
+    initAttributeVariable(gl, program.a_TexCoord, texCoords);// Texture coordinates
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index); // Bind indices
+
+    // Bind texture object to texture unit 0
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+
+    drawSegment(gl, n, buffer, program);
+  }
+
 // Draw segments
-function drawSegment(gl, n, buffer, indexBuffer, program) {
+function drawSegment(gl, n, buffer, program) {
 
   initAttributeVariable(gl, program.a_Position, buffer);
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+  //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   // Calculate the model view project matrix and pass it to u_MvpMatrix
   g_cameraMatrix.setTranslate(xPos,yPos,zPos);
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
@@ -283,6 +302,8 @@ function drawSegment(gl, n, buffer, indexBuffer, program) {
   g_normalMatrix.setInverseOf(g_modelMatrix);
   g_normalMatrix.transpose();
   gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
+  gl.uniform3f(program.u_TorchPosition, xPos, yPos, zPos - 3.0);
+
   // Draw
   gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
 }
