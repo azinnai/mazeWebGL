@@ -1,7 +1,7 @@
 // ProgramObject.js (c) 2012 matsuda and kanda
 // Vertex shader for single color drawing
 
-var AVATAR_VSHADER_SOURCE =
+/*var AVATAR_VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Normal;\n' +
   'uniform mat4 u_MvpMatrix;\n' +
@@ -26,6 +26,7 @@ var AVATAR_FSHADER_SOURCE =
   'void main() {\n' +
   '  gl_FragColor = v_Color;\n' +
   '}\n';
+*/
 
 var SKYBOX_VSHADER_SOURCE = " \
   uniform mat4 u_MvpMatrix;\n\
@@ -136,7 +137,7 @@ function main() {
   //retrieve locations of shader variables
   skyProgram = getSkyProgramLocations(gl, skyProgram);
   texProgram = getTexProgramLocations(gl, texProgram);
-  avatarProgram = getTexProgramLocations(gl, avatarProgram);
+  avatarProgram = getTexProgramLocations(gl, texProgram);
 
   
   //lights in the scene, better to put in a function
