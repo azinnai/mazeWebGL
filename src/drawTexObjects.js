@@ -141,6 +141,7 @@ function initCubeVertexBuffers(gl, xUnits, yUnits) {
 
   xUnits = 0.2*xUnits;
   yUnits = 0.2*yUnits; 
+  
   var texCoords = new Float32Array([   // Texture coordinates
      2*xUnits, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2*xUnits, 0.0,    // v0-v1-v2-v3 front
      0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,   2.0, 2*yUnits,    // v0-v3-v4-v5 right

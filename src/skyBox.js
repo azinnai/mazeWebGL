@@ -59,7 +59,6 @@ function createCubeMap(gl, posx, negx, posy, negy, posz, negz) {
   loadCubeFace(gl, texture, gl.TEXTURE_CUBE_MAP_POSITIVE_Z, posz);
   loadCubeFace(gl, texture, gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, negz);
 
-
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -73,8 +72,6 @@ function loadCubeFace(gl, texture, face, path) {
   var imgdata = new Image();
   imgdata.onload = function () {
     setCubeFace(gl, texture, face, imgdata);
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); 
-
   }
   imgdata.src = path;
 }
