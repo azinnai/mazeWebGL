@@ -135,7 +135,7 @@ function main() {
   //retrieve locations of shader variables
   skyProgram = getSkyProgramLocations(gl, skyProgram);
   texProgram = getTexProgramLocations(gl, texProgram);
-  avatarProgram = getTexProgramLocations(gl, avatarProgram);
+  avatarProgram = getTexProgramLocations(gl, texProgram);
 
   
   //lights in the scene, better to put in a function
