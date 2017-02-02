@@ -5,11 +5,11 @@ function initMazeVertexBuffers(gl) {
   var yUnits0;
   var xUnits1;
   
-  // LEVEL 0 (inner)
-  xUnits0 = 51.0;
-  yUnits0 = 3.0;
-  xUnits1 = 22.5;
-  
+  // TREASURE BOX
+  xUnits0 = 1.0;
+  yUnits0 = 1.0;
+  xUnits1 = 2.0;
+
   mazeWalls[0] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[1] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
   mazeWalls[0].xUnits = xUnits0;
@@ -17,42 +17,55 @@ function initMazeVertexBuffers(gl) {
   mazeWalls[1].xUnits = xUnits1;
   mazeWalls[1].yUnits = yUnits0;
 
+
+  // LEVEL 0 (inner)
+  xUnits0 = 51.0;
+  yUnits0 = 3.0;
+  xUnits1 = 22.5;
+  
+  mazeWalls[1] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[2] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
+  mazeWalls[1].xUnits = xUnits0;
+  mazeWalls[1].yUnits = yUnits0;
+  mazeWalls[2].xUnits = xUnits1;
+  mazeWalls[2].yUnits = yUnits0;
+
   
   // LEVEL 1
   xUnits0 = 101.0;
   yUnits0 = 3.0;
   xUnits1 = 49.0;
   
-  mazeWalls[2] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
-  mazeWalls[3] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
-  mazeWalls[2].xUnits = xUnits0;
-  mazeWalls[2].yUnits = yUnits0;
-  mazeWalls[3].xUnits = xUnits1;
+  mazeWalls[3] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[4] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
+  mazeWalls[3].xUnits = xUnits0;
   mazeWalls[3].yUnits = yUnits0;
+  mazeWalls[4].xUnits = xUnits1;
+  mazeWalls[4].yUnits = yUnits0;
 
   // LEVEL 2
   xUnits0 = 150.0;
   yUnits0 = 3.0;
   xUnits1 = 73.5;
 
-  mazeWalls[4] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
-  mazeWalls[5] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
-  mazeWalls[4].xUnits = xUnits0;
-  mazeWalls[4].yUnits = yUnits0;
-  mazeWalls[5].xUnits = xUnits1;
+  mazeWalls[5] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[6] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
+  mazeWalls[5].xUnits = xUnits0;
   mazeWalls[5].yUnits = yUnits0;
+  mazeWalls[6].xUnits = xUnits1;
+  mazeWalls[6].yUnits = yUnits0;
 
   // LEVEL 3 (outer)
   xUnits0 = 193.0;
   yUnits0 = 3.0;
   xUnits1 = 95.0;
   
-  mazeWalls[6] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
-  mazeWalls[7] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
-  mazeWalls[6].xUnits = xUnits0;
-  mazeWalls[6].yUnits = yUnits0;
-  mazeWalls[7].xUnits = xUnits1;
+  mazeWalls[7] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[8] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
+  mazeWalls[7].xUnits = xUnits0;
   mazeWalls[7].yUnits = yUnits0;
+  mazeWalls[8].xUnits = xUnits1;
+  mazeWalls[8].yUnits = yUnits0;
 
 
 
@@ -141,7 +154,6 @@ function initCubeVertexBuffers(gl, xUnits, yUnits) {
 
   xUnits = 0.2*xUnits;
   yUnits = 0.2*yUnits; 
-  
   var texCoords = new Float32Array([   // Texture coordinates
      2*xUnits, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2*xUnits, 0.0,    // v0-v1-v2-v3 front
      0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,   2.0, 2*yUnits,    // v0-v3-v4-v5 right
@@ -334,65 +346,67 @@ function drawCuboid(gl, program, o, x, y, z, planeAngle) {
   gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);   // Draw
 }
 
-function drawTexMazeWalls(gl, program, mazeWallsArray, texture){
+function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x,z){
   //x,y,x coordinates are referred to center of mass
+
+  // DRAW TREASURE BOX
+  drawTexCuboid(gl, program, mazeWallsArray[0], treas_texture, x, 0.0, z, 90.0);
 
 
   // LEVEL 0
   //right external wall
-  drawTexCuboid(gl, program, mazeWallsArray[0], texture, 50.0, mazeWallsArray[0].yUnits, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[1], texture, 50.0, mazeWallsArray[1].yUnits, 0.0, 90.0);
   //left external wall 1 (door)
-  drawTexCuboid(gl, program, mazeWallsArray[1], texture, -50.0, mazeWallsArray[1].yUnits, -27.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -50.0, mazeWallsArray[2].yUnits, -27.0, 90.0);
   //left external wall 2 (door)
-  drawTexCuboid(gl, program, mazeWallsArray[1], texture, -50.0, mazeWallsArray[1].yUnits, 27.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -50.0, mazeWallsArray[2].yUnits, 27.0, 90.0);
   //top external wall
-  drawTexCuboid(gl, program, mazeWallsArray[0], texture, 0.0, mazeWallsArray[0].yUnits, -50.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[1], texture, 0.0, mazeWallsArray[1].yUnits, -50.0, 0.0);
   //bottom external wall
-  drawTexCuboid(gl, program, mazeWallsArray[0], texture, 0.0, mazeWallsArray[0].yUnits, 50.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[1], texture, 0.0, mazeWallsArray[1].yUnits, 50.0, 0.0);
 
 
   // LEVEL 1
   //right external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[3], texture, 100.0, mazeWallsArray[3].yUnits, 52.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[4], texture, 100.0, mazeWallsArray[4].yUnits, 52.0, 90.0);
   //right external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[3], texture, 100.0, mazeWallsArray[3].yUnits, -52.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[4], texture, 100.0, mazeWallsArray[4].yUnits, -52.0, 90.0);
   //left external wall
-  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -100.0, mazeWallsArray[2].yUnits, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[3], texture, -100.0, mazeWallsArray[3].yUnits, 0.0, 90.0);
   //top external wall
-  drawTexCuboid(gl, program, mazeWallsArray[2], texture, 0.0, mazeWallsArray[2].yUnits, -100.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[3], texture, 0.0, mazeWallsArray[3].yUnits, -100.0, 0.0);
   //bottom external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[3], texture, -52.0, mazeWallsArray[3].yUnits, 100.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[4], texture, -52.0, mazeWallsArray[4].yUnits, 100.0, 0.0);
   //bottom external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[3], texture, 52.0, mazeWallsArray[3].yUnits, 100.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[4], texture, 52.0, mazeWallsArray[4].yUnits, 100.0, 0.0);
 
 
   // LEVEL 2
   //left external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[5], texture, -150.0, mazeWallsArray[5].yUnits, 76.5, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -150.0, mazeWallsArray[6].yUnits, 76.5, 90.0);
   //left external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[5], texture, -150.0, mazeWallsArray[5].yUnits, -76.5, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -150.0, mazeWallsArray[6].yUnits, -76.5, 90.0);
   //top external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[5], texture, 76.5, mazeWallsArray[5].yUnits, -149.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, 76.5, mazeWallsArray[6].yUnits, -149.0, 0.0);
   //top external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[5], texture, -76.5, mazeWallsArray[5].yUnits, -149.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -76.5, mazeWallsArray[6].yUnits, -149.0, 0.0);
   //bottom external wall
-  drawTexCuboid(gl, program, mazeWallsArray[4], texture, 0.0, mazeWallsArray[4].yUnits, 149.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[5], texture, 0.0, mazeWallsArray[5].yUnits, 149.0, 0.0);
   //right external wall
-  drawTexCuboid(gl, program, mazeWallsArray[4], texture, 150.0, mazeWallsArray[4].yUnits, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[5], texture, 150.0, mazeWallsArray[5].yUnits, 0.0, 90.0);
 
 
   // LEVEL 3
   //right external wall
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, 192.0, mazeWallsArray[6].yUnits, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[7], texture, 192.0, mazeWallsArray[7].yUnits, 0.0, 90.0);
   //left external wall
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -192.0, mazeWallsArray[6].yUnits, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[7], texture, -192.0, mazeWallsArray[7].yUnits, 0.0, 90.0);
   //top external wall
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, 0.0, mazeWallsArray[6].yUnits, -192.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[7], texture, 0.0, mazeWallsArray[7].yUnits, -192.0, 0.0);
   //bottom external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[7], texture, -98.0, mazeWallsArray[7].yUnits, 192.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[8], texture, -98.0, mazeWallsArray[8].yUnits, 192.0, 0.0);
   //bottom external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[7], texture, 98.0, mazeWallsArray[7].yUnits, 192.0, 0.0);
-
+  drawTexCuboid(gl, program, mazeWallsArray[8], texture, 98.0, mazeWallsArray[8].yUnits, 192.0, 0.0);
 
 
 

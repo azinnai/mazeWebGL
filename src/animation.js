@@ -15,13 +15,13 @@ var pitch = 0;
 var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
-var xPos = 0.056478155032779295;  
+var xPos = 0.0;            //0.056478155032779295;  
 var yPos = 1.4;
 var zPos = 201.7057334788756;
 var speed = 0;
 
 // disegno avatar
-var step = 100.0;
+var step = 400.0;
 var ankleInterval = 48.0;
 var armInterval = 25.0;
 var hipInterval = 40.0;
@@ -44,6 +44,14 @@ var decrement = false;
 
 
 function handleKeys() {
+
+    if (currentlyPressedKeys[65]) {
+        // A
+        yawRate = 0.05;
+    } else if (currentlyPressedKeys[68]) {
+        // D
+        yawRate = -0.05;
+    } else
     if (currentlyPressedKeys[80]) {
         // P
         pitchRate = 0.05;
@@ -53,20 +61,20 @@ function handleKeys() {
     } else {
         pitchRate = 0;
     }
-    if (currentlyPressedKeys[37] || currentlyPressedKeys[65]) {
-        // Left cursor key or A
+    if (currentlyPressedKeys[37]) {
+        // Left cursor key 
         yawRate = 0.05;
-    } else if (currentlyPressedKeys[39] || currentlyPressedKeys[68]) {
-        // Right cursor key or D
+    } else if (currentlyPressedKeys[39]) {
+        // Right cursor key
         yawRate = -0.05;
 
     } else {
         yawRate = 0;
     }
-    if (currentlyPressedKeys[38] || currentlyPressedKeys[87]) {
-        // Up cursor key or W
+    if (currentlyPressedKeys[38]) {
+        // Up cursor key
         speed = 0.03;
-    } else if (currentlyPressedKeys[40] || currentlyPressedKeys[83]) {
+    } else if (currentlyPressedKeys[40]) {
         // Down cursor key
         speed = -0.03;
     } else {
@@ -189,9 +197,11 @@ function handleKeys() {
 
     }
 }
+
 var lastTime = 0;
     // Used to make us "jog" up and down as we move forward.
 var joggingAngle = 0;
+
 function animate() {
     var timeNow = new Date().getTime();
     if (lastTime != 0) {

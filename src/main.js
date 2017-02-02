@@ -1,7 +1,7 @@
 // ProgramObject.js (c) 2012 matsuda and kanda
 // Vertex shader for single color drawing
 
-/*var AVATAR_VSHADER_SOURCE =
+var AVATAR_VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Normal;\n' +
   'uniform mat4 u_MvpMatrix;\n' +
@@ -26,7 +26,6 @@ var AVATAR_FSHADER_SOURCE =
   'void main() {\n' +
   '  gl_FragColor = v_Color;\n' +
   '}\n';
-*/
 
 var SKYBOX_VSHADER_SOURCE = " \
   uniform mat4 u_MvpMatrix;\n\
@@ -122,8 +121,7 @@ function main() {
     console.log('Failed to get the rendering context for WebGL');
     return;
   }
- 
- 
+
   // Initialize shaders
   var skyProgram = createProgram(gl, SKYBOX_VSHADER_SOURCE, SKYBOX_FSHADER_SOURCE);
   var texProgram = createProgram(gl, TEXTURE_VSHADER_SOURCE, TEXTURE_FSHADER_SOURCE);
@@ -137,7 +135,7 @@ function main() {
   //retrieve locations of shader variables
   skyProgram = getSkyProgramLocations(gl, skyProgram);
   texProgram = getTexProgramLocations(gl, texProgram);
-  avatarProgram = getTexProgramLocations(gl, texProgram);
+  avatarProgram = getTexProgramLocations(gl, avatarProgram);
 
   
   //lights in the scene, better to put in a function
@@ -180,13 +178,17 @@ function main() {
     return;
   }
 
-  //da inserire la texture
-  var avatarTexture = init2DTexture(gl, texProgram, 'resources/avatarTex.jpg');
+  var avatarTexture = init2DTexture(gl, texProgram, 'resources/avatar.jpg');
   if (!floorTexture) {
     console.log('Failed to intialize the floor texture.');
     return;
   }
 
+  var treasureTexture = init2DTexture(gl, texProgram, 'resources/wood.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
+  if (!floorTexture) {
+    console.log('Failed to intialize the floor texture.');
+    return;
+  }
 
   var cubeMapTexture = createCubeMap(gl,
     'resources/cubemap/posx.jpg', 
@@ -208,6 +210,27 @@ function main() {
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
 
+
+  // TREASURE: allowed locations 
+
+  var space = Math.floor((Math.random() * 4) + 1);
+  
+  if (space == 1) {
+    x_loc = Math.floor((Math.random() * 188.5) - 188.5);
+    z_loc = Math.floor((Math.random() * 188.5) - 188.5);
+    } else if (space == 2) {
+    x_loc = Math.floor((Math.random() * 145.5) - 145.5);
+    z_loc = Math.floor((Math.random() * 145.5) - 145.5);
+    } else if (space == 3) {
+    x_loc = Math.floor((Math.random() * 96.5) - 96.5);
+    z_loc = Math.floor((Math.random() * 96.5) - 96.5);
+    } else {
+    x_loc = Math.floor((Math.random() * 46.5) - 46.5);
+    z_loc = Math.floor((Math.random() * 46.5) - 46.5);
+    }
+
+    console.log('X location of treasure: ' + x_loc + 'Z location of treasure: ' + z_loc + '\n');
+
   var tick = function() {
     
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear color and depth buffers
@@ -216,7 +239,7 @@ function main() {
 
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
-   	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture);
+   	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, treasureTexture, x_loc, z_loc);
     drawTexAvatar(gl, avatarProgram, avatar, avatarTexture);
     animate();
 
@@ -226,7 +249,6 @@ function main() {
 
   tick();
 }
-
 
 
 // Assign the buffer objects and enable the assignment
