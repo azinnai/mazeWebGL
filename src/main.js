@@ -1,7 +1,7 @@
 // ProgramObject.js (c) 2012 matsuda and kanda
 // Vertex shader for single color drawing
 
-var AVATAR_VSHADER_SOURCE =
+var SOLID_VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Normal;\n' +
   'uniform mat4 u_MvpMatrix;\n' +
@@ -18,7 +18,7 @@ var AVATAR_VSHADER_SOURCE =
   '}\n';
 
 // Fragment shader program
-var AVATAR_FSHADER_SOURCE =
+var SOLID_FSHADER_SOURCE =
   '#ifdef GL_ES\n' +
   'precision mediump float;\n' +
   '#endif\n' +
@@ -164,6 +164,11 @@ function main() {
     console.log('failed to set avatar vertex information');
   }
 
+  var door = initDoorVertexBuffers(gl);
+  if (!door){
+    console.log('failed to set door vertex information');
+  }
+
 
   // Set texture
   var mazeWallTexture = init2DTexture(gl, texProgram, 'resources/wallstone.jpg');
@@ -180,13 +185,19 @@ function main() {
 
   var avatarTexture = init2DTexture(gl, texProgram, 'resources/avatar.jpg');
   if (!floorTexture) {
-    console.log('Failed to intialize the floor texture.');
+    console.log('Failed to intialize the avatar texture.');
     return;
   }
 
   var treasureTexture = init2DTexture(gl, texProgram, 'resources/wood.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
   if (!floorTexture) {
-    console.log('Failed to intialize the floor texture.');
+    console.log('Failed to intialize the trasure texture.');
+    return;
+  }
+
+  var doorTexture = init2DTexture(gl, texProgram, 'resources/door.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
+  if (!doorTexture) {
+    console.log('Failed to intialize the door texture.');
     return;
   }
 
@@ -198,9 +209,11 @@ function main() {
     'resources/cubemap/posz.jpg',
     'resources/cubemap/negz.jpg'
     );
+
   if(!cubeMapTexture){
     console.log('failed to initialize sky texture. ')
   }
+
   // Set the clear color and enable the depth test
   gl.enable(gl.DEPTH_TEST);
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -211,7 +224,8 @@ function main() {
   document.onkeyup = handleKeyUp;
 
 
-  // TREASURE: allowed locations 
+  // TREASURE: allowed locations DALLO L'INGEGNERE
+
 
   var space = Math.floor((Math.random() * 4) + 1);
   
@@ -240,7 +254,8 @@ function main() {
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, treasureTexture, x_loc, z_loc);
-    drawTexAvatar(gl, avatarProgram, avatar, avatarTexture);
+    drawTexAvatar(gl, texProgram, avatar, avatarTexture);
+    drawTexDoors(gl, texProgram, door, doorTexture);
     animate();
 
     window.requestAnimationFrame(tick, canvas);

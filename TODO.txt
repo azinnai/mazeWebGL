@@ -1,0 +1,10 @@
+cosa da finire per il progetto.
+
+1) il robot ruota su se stesso e non intorno alla telecamera.
+2) implementare visuale orbitale con altri tasti diversi da sopra.
+3) da disegnare le porte.
+4) le porte si aprono come la scatola.
+5) la scatola contiene il tesoro di pulp fiction e quando la trovi il gioco finisce.
+6) pannello html per interazione con il codice javascript, e.g. cambio visual e istruzioni
+7) non si può entrare negli oggetti.
+

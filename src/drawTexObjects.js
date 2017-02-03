@@ -4,6 +4,7 @@ function initMazeVertexBuffers(gl) {
   var xUnits0;
   var yUnits0;
   var xUnits1;
+
   
   // TREASURE BOX
   xUnits0 = 1.0;
@@ -77,8 +78,26 @@ function initMazeVertexBuffers(gl) {
     }
   }
   return mazeWalls;
-
 }
+
+function initDoorVertexBuffers(gl){
+
+  	var door;
+  	var xUnits = 3.0;
+  	var yUnits = 3.0;
+  	var textureMapping = [1.0, 1.0];
+
+  	door = initCubeVertexBuffers(gl, xUnits, yUnits, textureMapping);
+  	door.xUnits = xUnits;
+  	door.yUnits = yUnits;
+
+  	if (!door) {
+      	console.log('Failed to set the door vertex information');
+      	return;
+    }
+  	return door;
+}
+
 
 function initFloorVertexBuffers(gl, halfLength) {
 
@@ -123,7 +142,7 @@ function initFloorVertexBuffers(gl, halfLength) {
 
 }
 
-function initCubeVertexBuffers(gl, xUnits, yUnits) {
+function initCubeVertexBuffers(gl, xUnits, yUnits, textureUnits=null) {
   // Create a cube
   //    v6----- v5
   //   /|      /|
@@ -151,16 +170,21 @@ function initCubeVertexBuffers(gl, xUnits, yUnits) {
      0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,   0.0,-1.0, 0.0,     // v7-v4-v3-v2 down
      0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0,   0.0, 0.0,-1.0      // v4-v7-v6-v5 back
   ]);
+  if(textureUnits==null){
+  	xUnits = 0.4*xUnits;
+  	yUnits = 0.4*yUnits; 
+  } else {
+  	xUnits = textureUnits[0];
+  	yUnits = textureUnits[1];
+  }
 
-  xUnits = 0.2*xUnits;
-  yUnits = 0.2*yUnits; 
   var texCoords = new Float32Array([   // Texture coordinates
-     2*xUnits, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2*xUnits, 0.0,    // v0-v1-v2-v3 front
-     0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,   2.0, 2*yUnits,    // v0-v3-v4-v5 right
-     2*xUnits, 0.0,   2*xUnits, 2.0,   0.0, 2.0,   0.0, 0.0,    // v0-v5-v6-v1 up
-     2.0, 2*yUnits,   0.0, 2*yUnits,   0.0, 0.0,   2.0, 0.0,    // v1-v6-v7-v2 left
-     0.0, 0.0,   2*xUnits, 0.0,   2*xUnits, 2.0,   0.0, 2.0,    // v7-v4-v3-v2 down
-     0.0, 0.0,   2*xUnits, 0.0,   2*xUnits, 2*yUnits,   0.0, 2*yUnits     // v4-v7-v6-v5 back
+     xUnits, yUnits,   0.0, yUnits,   0.0, 0.0,   xUnits, 0.0,    // v0-v1-v2-v3 front
+     0.0, yUnits,   0.0, 0.0,   2.0, 0.0,   2.0, yUnits,    // v0-v3-v4-v5 right
+     xUnits, 0.0,   xUnits, 2.0,   0.0, 2.0,   0.0, 0.0,    // v0-v5-v6-v1 up
+     2.0, yUnits,   0.0, yUnits,   0.0, 0.0,   2.0, 0.0,    // v1-v6-v7-v2 left
+     0.0, 0.0,   xUnits, 0.0,   xUnits, 2.0,   0.0, 2.0,    // v7-v4-v3-v2 down
+     0.0, 0.0,   xUnits, 0.0,   xUnits, yUnits,   0.0, yUnits     // v4-v7-v6-v5 back
   ]);
 
   var indices = new Uint8Array([        // Indices of the vertices
@@ -314,44 +338,12 @@ function drawTexCuboid(gl, program, o, texture, x, y, z, planeAngle) {
   drawCuboid(gl, program, o, x, y, z, planeAngle); // Draw
   //gl.bindTexture(gl.TEXTURE_2D, null);
 }
-// Coordinate transformation matrix
-var g_cameraMatrix = new Matrix4();
-var g_viewMatrix = new Matrix4();
-var g_projMatrix = new Matrix4();
-var g_modelMatrix = new Matrix4();
-var g_mvpMatrix = new Matrix4();
-var g_normalMatrix = new Matrix4();
-
-function drawCuboid(gl, program, o, x, y, z, planeAngle) {
-  // Calculate a model matrix
-  g_modelMatrix.setTranslate(x, y, z);
-  g_modelMatrix.rotate(planeAngle, 0.0, 1.0, 0.0);
-  
-  g_cameraMatrix.setTranslate(xPos,yPos,zPos);
-  g_cameraMatrix.rotate(yaw, 0, 1, 0);
-  g_cameraMatrix.rotate(pitch, 1, 0, 0);
-  g_viewMatrix.setInverseOf(g_cameraMatrix);
-
-  //generating modelViewProjectionMatrix and passing it to the uniform variable
-  g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
-  gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
-  gl.uniformMatrix4fv(program.u_ModelMatrix, false, g_modelMatrix.elements);
-  gl.uniformMatrix4fv(program.u_CameraMatrix, false, g_cameraMatrix.elements);
-  // Calculate transformation matrix for normals and pass it to u_NormalMatrix
-  g_normalMatrix.setInverseOf(g_modelMatrix);
-  g_normalMatrix.transpose();
-  gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
-  gl.uniform3f(program.u_TorchPosition, xPos, yPos, zPos);
-
-  gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);   // Draw
-}
 
 function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x,z){
   //x,y,x coordinates are referred to center of mass
 
   // DRAW TREASURE BOX
   drawTexCuboid(gl, program, mazeWallsArray[0], treas_texture, x, 0.0, z, 90.0);
-
 
   // LEVEL 0
   //right external wall
@@ -407,10 +399,49 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x
   drawTexCuboid(gl, program, mazeWallsArray[8], texture, -98.0, mazeWallsArray[8].yUnits, 192.0, 0.0);
   //bottom external wall 2
   drawTexCuboid(gl, program, mazeWallsArray[8], texture, 98.0, mazeWallsArray[8].yUnits, 192.0, 0.0);
+}
 
+function drawTexDoors(gl, program, door, texture){
 
+	drawTexCuboid(gl, program, door, texture, -50.0, door.yUnits, 0.0, 90.0);
 
 }
+
+
+
+
+// Coordinate transformation matrix
+var g_cameraMatrix = new Matrix4();
+var g_viewMatrix = new Matrix4();
+var g_projMatrix = new Matrix4();
+var g_modelMatrix = new Matrix4();
+var g_mvpMatrix = new Matrix4();
+var g_normalMatrix = new Matrix4();
+
+function drawCuboid(gl, program, o, x, y, z, planeAngle) {
+  // Calculate a model matrix
+  g_modelMatrix.setTranslate(x, y, z);
+  g_modelMatrix.rotate(planeAngle, 0.0, 1.0, 0.0);
+  
+  g_cameraMatrix.setTranslate(xPos,yPos,zPos);
+  g_cameraMatrix.rotate(yaw, 0, 1, 0);
+  g_cameraMatrix.rotate(pitch, 1, 0, 0);
+  g_viewMatrix.setInverseOf(g_cameraMatrix);
+
+  //generating modelViewProjectionMatrix and passing it to the uniform variable
+  g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
+  gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
+  gl.uniformMatrix4fv(program.u_ModelMatrix, false, g_modelMatrix.elements);
+  gl.uniformMatrix4fv(program.u_CameraMatrix, false, g_cameraMatrix.elements);
+  // Calculate transformation matrix for normals and pass it to u_NormalMatrix
+  g_normalMatrix.setInverseOf(g_modelMatrix);
+  g_normalMatrix.transpose();
+  gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
+  gl.uniform3f(program.u_TorchPosition, xPos, yPos, zPos);
+
+  gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);   // Draw
+}
+
 
 
 
