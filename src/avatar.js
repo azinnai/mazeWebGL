@@ -209,8 +209,8 @@ function drawTexAvatar(gl, program, o, texture) {
 
   // qui è importante capire dove mettere il robot, probabilmente all'inizio non si vedrà
   
-  g_modelMatrix.setTranslate(xPos, yPos-0.5, zPos);
-  g_modelMatrix.translate(-3.0*Math.sin(degToRad(yaw)), 0.0, -3.0*Math.cos(degToRad(yaw)));
+  g_modelMatrix.setTranslate(xPos, yPos-0.5, zPos-3);
+  //g_modelMatrix.translate(-3.0*Math.sin(degToRad(yaw)), 0.0, -3.0*Math.cos(degToRad(yaw)));
   g_modelMatrix.rotate(yaw, 0.0, 1.0, 0.0);
   g_modelMatrix.scale(0.04,0.04,-0.04);
   drawPartAvatar(gl, program, o.g_bodyBuffer, normals, texCoords, index, texture, n);
@@ -269,19 +269,19 @@ function drawTexAvatar(gl, program, o, texture) {
 
 }
 
-  function drawPartAvatar(gl, program, buffer, normals, texCoords, index, texture, n){
-    
-    initAttributeVariable(gl, program.a_Position, buffer);  // Vertex coordinates
-    initAttributeVariable(gl, program.a_Normal, normals);    // Normal
-    initAttributeVariable(gl, program.a_TexCoord, texCoords);// Texture coordinates
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index); // Bind indices
+function drawPartAvatar(gl, program, buffer, normals, texCoords, index, texture, n){
 
-    // Bind texture object to texture unit 0
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+	initAttributeVariable(gl, program.a_Position, buffer);  // Vertex coordinates
+	initAttributeVariable(gl, program.a_Normal, normals);    // Normal
+	initAttributeVariable(gl, program.a_TexCoord, texCoords);// Texture coordinates
+	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, index); // Bind indices
 
-    drawSegment(gl, n, buffer, program);
-  }
+	// Bind texture object to texture unit 0
+	gl.activeTexture(gl.TEXTURE0);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+
+	drawSegment(gl, n, buffer, program);
+}
 
 // Draw segments
 function drawSegment(gl, n, buffer, program) {
@@ -289,11 +289,12 @@ function drawSegment(gl, n, buffer, program) {
   initAttributeVariable(gl, program.a_Position, buffer);
   //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   // Calculate the model view project matrix and pass it to u_MvpMatrix
-  g_cameraMatrix.setTranslate(xPos,yPos,zPos);
+  /*g_cameraMatrix.setTranslate(xPos,yPos,zPos);
+  g_cameraMatrix.translate(3.0*Math.sin(degToRad(yaw)), 0.0, 3.0*Math.cos(degToRad(yaw)));
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
   g_cameraMatrix.rotate(pitch, 1, 0, 0);
   g_viewMatrix.setInverseOf(g_cameraMatrix);
-
+*/
   //generating modelViewProjectionMatrix and passing it to the uniform variable
   g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
 

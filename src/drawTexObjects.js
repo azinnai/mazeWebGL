@@ -22,7 +22,7 @@ function initMazeVertexBuffers(gl) {
   // LEVEL 0 (inner)
   xUnits0 = 51.0;
   yUnits0 = 3.0;
-  xUnits1 = 22.5;
+  xUnits1 = 23.25;
   
   mazeWalls[1] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[2] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
@@ -349,9 +349,9 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x
   //right external wall
   drawTexCuboid(gl, program, mazeWallsArray[1], texture, 50.0, mazeWallsArray[1].yUnits, 0.0, 90.0);
   //left external wall 1 (door)
-  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -50.0, mazeWallsArray[2].yUnits, -27.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -50.0, mazeWallsArray[2].yUnits, -26.250, 90.0);
   //left external wall 2 (door)
-  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -50.0, mazeWallsArray[2].yUnits, 27.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[2], texture, -50.0, mazeWallsArray[2].yUnits, 26.250, 90.0);
   //top external wall
   drawTexCuboid(gl, program, mazeWallsArray[1], texture, 0.0, mazeWallsArray[1].yUnits, -50.0, 0.0);
   //bottom external wall
@@ -404,6 +404,12 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x
 function drawTexDoors(gl, program, door, texture){
 
 	drawTexCuboid(gl, program, door, texture, -50.0, door.yUnits, 0.0, 90.0);
+	drawTexCuboid(gl, program, door, texture, 100.0, door.yUnits, 0.0, 90.0);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 100.0, 0.0);
+	drawTexCuboid(gl, program, door, texture, -150.0, door.yUnits, 0.0, 90.0);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, -149.0, 0.0);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 192.0, 0.0);
+
 
 }
 
@@ -423,11 +429,11 @@ function drawCuboid(gl, program, o, x, y, z, planeAngle) {
   g_modelMatrix.setTranslate(x, y, z);
   g_modelMatrix.rotate(planeAngle, 0.0, 1.0, 0.0);
   
-  g_cameraMatrix.setTranslate(xPos,yPos,zPos);
+  /*g_cameraMatrix.setTranslate(xPos,yPos,zPos);
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
   g_cameraMatrix.rotate(pitch, 1, 0, 0);
   g_viewMatrix.setInverseOf(g_cameraMatrix);
-
+*/
   //generating modelViewProjectionMatrix and passing it to the uniform variable
   g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
   gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);
