@@ -223,8 +223,19 @@ function main() {
   document.onkeydown = handleKeyDown;
   document.onkeyup = handleKeyUp;
 
+var x0 = 50.0;
+var z0 = 26.25;
+var x1 = 100.0;
+var z1 = 52.0;
+var x2 = 150.0;
+var z2 = 76.5;
+var x3 = 192.0;
+var z3 = 98.0;
+var locations = [x0, z0, x1, z1, x2, z2, x3, z3];
 
-  // TREASURE: allowed locations DALLO L'INGEGNERE
+blacklist = computeBlacklist(mazeWalls, locations);
+
+  // TREASURE: allowed locations 
 
 
   var space = Math.floor((Math.random() * 4) + 1);
@@ -253,7 +264,7 @@ function main() {
 
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
-   	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, treasureTexture, x_loc, z_loc);
+   	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, treasureTexture, x_loc, z_loc, locations);
     drawTexAvatar(gl, texProgram, avatar, avatarTexture);
     drawTexDoors(gl, texProgram, door, doorTexture);
     animate();

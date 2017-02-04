@@ -211,7 +211,7 @@ function animate() {
             zPos -= Math.cos(degToRad(yaw)) * speed * elapsed;
             joggingAngle += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPos = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
-            //console.log('xPos: ' + xPos + 'zPos: ' + zPos + '\n');
+            console.log('xPos: ' + xPos + 'zPos: ' + zPos + '\n');
         }
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
