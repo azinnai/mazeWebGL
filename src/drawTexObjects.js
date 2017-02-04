@@ -12,13 +12,9 @@ function initMazeVertexBuffers(gl) {
   xUnits1 = 2.0;
 
   mazeWalls[0] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
-  mazeWalls[1] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
   mazeWalls[0].xUnits = xUnits0;
   mazeWalls[0].yUnits = yUnits0;
-  mazeWalls[1].xUnits = xUnits1;
-  mazeWalls[1].yUnits = yUnits0;
-
-
+ 
   // LEVEL 0 (inner)
   xUnits0 = 51.0;
   yUnits0 = 3.0;
@@ -413,24 +409,6 @@ function drawTexDoors(gl, program, door, texture){
 }
 
 
-
-function computeBlacklist(mazeWallsArray, locations) {
-blacklist = [];
-
-
-
-// LEVEL 3
-for (i = locations[6]-0.5; i <= locations[6]+0.5; i++) {
-	for (j = -mazeWallsArray[8].xUnits; j <= mazeWallsArray[8].xUnits; j++) {
-  blacklist.push(i,j)
-  } 
-  } console.log(blacklist.slice(0));
-  
-
-
-  return blacklist;
-
-  }
 
 
 
