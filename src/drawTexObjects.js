@@ -264,6 +264,33 @@ function getTexProgramLocations(gl, texProgram){
   return texProgram; 
 }
 
+function getMouseProgramLocations(gl, mouseProgram){
+  // Get storage locations of attribute and uniform variables in program object for texture drawing
+  mouseProgram.a_Position = gl.getAttribLocation(mouseProgram, 'a_Position');
+  mouseProgram.a_Normal = gl.getAttribLocation(mouseProgram, 'a_Normal');
+  mouseProgram.a_TexCoord = gl.getAttribLocation(mouseProgram, 'a_TexCoord');
+  mouseProgram.u_MvpMatrix = gl.getUniformLocation(mouseProgram, 'u_MvpMatrix');
+  mouseProgram.u_NormalMatrix = gl.getUniformLocation(mouseProgram, 'u_NormalMatrix');
+  mouseProgram.u_ModelMatrix = gl.getUniformLocation(mouseProgram, 'u_ModelMatrix');
+  mouseProgram.u_CameraMatrix = gl.getUniformLocation(mouseProgram, 'u_CameraMatrix');
+  mouseProgram.u_Sampler = gl.getUniformLocation(mouseProgram, 'u_Sampler');
+  mouseProgram.u_TorchColor = gl.getUniformLocation(mouseProgram, 'u_TorchColor');
+  mouseProgram.u_AmbientLight = gl.getUniformLocation(mouseProgram, 'u_AmbientLight');
+  mouseProgram.u_TorchPosition = gl.getUniformLocation(mouseProgram, 'u_TorchPosition');
+  mouseProgram.u_Clicked = gl.getUniformLocation(mouseProgram, 'u_Clicked');
+
+
+  if (mouseProgram.a_Position < 0 || mouseProgram.a_Normal < 0 || mouseProgram.a_TexCoord < 0 ||
+    !mouseProgram.u_MvpMatrix || !mouseProgram.u_NormalMatrix || !mouseProgram.u_ModelMatrix || 
+    !mouseProgram.u_CameraMatrix || !mouseProgram.u_Sampler || !mouseProgram.u_TorchColor ||
+    !mouseProgram.u_AmbientLight || !mouseProgram.u_TorchPosition || !mouseProgram.u_Clicked) { 
+    console.log('Failed to get the storage location of attribute or uniform variable'); 
+    return;
+  }
+
+  return mouseProgram; 
+}
+
 function drawTexFloor(gl, program, o, texture) {
   gl.useProgram(program);   // Tell that this program object is used
 
@@ -405,7 +432,8 @@ function drawTexDoors(gl, program, door, texture){
 	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 100.0, 0.0);
 	drawTexCuboid(gl, program, door, texture, -150.0, door.yUnits, 0.0, 90.0);
 	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, -149.0, 0.0);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 192.0, 0.0);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits+6, 192.0, 0.0);
+
 }
 
 
