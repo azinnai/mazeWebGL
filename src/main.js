@@ -1,6 +1,6 @@
 // ProgramObject.js (c) 2012 matsuda and kanda
 // Vertex shader for single color drawing
-
+/*
 var SOLID_VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Normal;\n' +
@@ -26,7 +26,7 @@ var SOLID_FSHADER_SOURCE =
   'void main() {\n' +
   '  gl_FragColor = v_Color;\n' +
   '}\n';
-
+*/
 var SKYBOX_VSHADER_SOURCE = " \
   uniform mat4 u_MvpMatrix;\n\
   attribute vec3 a_Position ;\n\
@@ -212,6 +212,7 @@ function main() {
 
   gl.uniform3f(mouseProgram.u_AmbientLight , 1.0, 1.0, 1.0);
 
+  //initializing vertex buffers
   var mazeWalls = initMazeVertexBuffers(gl);
   if (!mazeWalls){
     console.log('Failed to set mazeWalls vertex information');
@@ -241,7 +242,7 @@ function main() {
   }
 
 
-  // Set texture
+  // Set textures
   var mazeWallTexture = init2DTexture(gl, texProgram, 'resources/wallstone.jpg');
   if (!mazeWallTexture) {
     console.log('Failed to intialize the cube texture.');

@@ -45,7 +45,9 @@ function myXOR(a,b) {
 
 function degToRad(degrees) {
         return degrees * Math.PI / 180;
-    }
+}
+
+
 var currentlyPressedKeys = {};
 
 function handleKeyDown(event) {

@@ -158,29 +158,6 @@ function initArrayBufferForLaterUse(gl, data, num, type){
   return buffer;
 }
 
-function initArrayBuffer(gl, attribute, data, num, type){
-  var buffer = gl.createBuffer();   // Create a buffer object
-  if (!buffer) {
-    console.log('Failed to create the buffer object');
-    return false;
-  }
-  // Write date into the buffer object
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-
-  // Assign the buffer object to the attribute variable
-  var a_attribute = gl.getAttribLocation(gl.program, attribute);
-  if (a_attribute < 0) {
-    console.log('Failed to get the storage location of ' + attribute);
-    return false;
-  }
-  gl.vertexAttribPointer(a_attribute, num, type, false, 0, 0);
-  // Enable the assignment of the buffer object to the attribute variable
-  gl.enableVertexAttribArray(a_attribute);
-
-  return true;
-}
-
 var g_matrixStack = []; // Array for storing a matrix
 function pushMatrix(m) { // Store the specified matrix to the array
   var m2 = new Matrix4(m);
