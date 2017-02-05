@@ -66,7 +66,7 @@ var zPos = 201.7057334788756;
 var speed = 0;
 
 // disegno avatar
-var step = 400.0;
+var step = 200.0;
 var ankleInterval = 48.0;
 var armInterval = 25.0;
 var hipInterval = 40.0;

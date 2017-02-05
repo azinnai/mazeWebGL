@@ -432,7 +432,7 @@ function drawTexDoors(gl, program, door, texture){
 	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 100.0, 0.0);
 	drawTexCuboid(gl, program, door, texture, -150.0, door.yUnits, 0.0, 90.0);
 	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, -149.0, 0.0);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits+6, 192.0, 0.0);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 192.0, 0.0);
 
 }
 
