@@ -271,7 +271,7 @@ function drawSegment(gl, n, buffer, program) {
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
   g_cameraMatrix.rotate(pitch, 1, 0, 0);
   g_viewMatrix.setInverseOf(g_cameraMatrix);
-*/
+	*/
   //generating modelViewProjectionMatrix and passing it to the uniform variable
   g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
 

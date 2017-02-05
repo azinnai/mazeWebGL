@@ -5,16 +5,6 @@ function initMazeVertexBuffers(gl) {
   var yUnits0;
   var xUnits1;
 
-  
-  // TREASURE BOX
-  xUnits0 = 1.0;
-  yUnits0 = 1.0;
-  xUnits1 = 2.0;
-
-  mazeWalls[0] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
-  mazeWalls[0].xUnits = xUnits0;
-  mazeWalls[0].yUnits = yUnits0;
- 
   // LEVEL 0 (inner)
   xUnits0 = 51.0;
   yUnits0 = 3.0;
@@ -67,13 +57,31 @@ function initMazeVertexBuffers(gl) {
 
 
 
-  for(i=0; i < mazeWalls.length; i++){
+  for(i=1; i < mazeWalls.length; i++){
     if (!mazeWalls[i]) {
       console.log('Failed to set the cube vertex information');
       return;
     }
   }
   return mazeWalls;
+}
+
+function initTreasureVertexBuffers(gl){
+  // TREASURE BOX
+  xUnits0 = 1.0;
+  yUnits0 = 1.0;
+  var treasure;
+
+  treasure = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  treasure.xUnits = xUnits0;
+  treasure.yUnits = yUnits0;
+
+  if (!treasure) {
+    console.log('Failed to set the treasure vertex information');
+    return;
+  }
+
+  return treasure;
 }
 
 function initDoorVertexBuffers(gl){

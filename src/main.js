@@ -44,7 +44,7 @@ var SKYBOX_FSHADER_SOURCE = " \
   void main( void )\n\
   {\n\
     vec3 color = textureCube(u_CubeMap, vpos).rgb;\n \
-    gl_FragColor = vec4(0.2*color, 1.0) ;\n \
+    gl_FragColor = vec4(0.7*color, 1.0) ;\n \
   } ";
 // Vertex shader for texture drawing
 var TEXTURE_VSHADER_SOURCE =
@@ -99,7 +99,7 @@ var TEXTURE_FSHADER_SOURCE =
   '  vec3 diffuse =  diffuseCoef * u_TorchColor * color.rgb ;\n' +
 
   //ambient light
-  '  vec3 ambient = 0.8 * u_AmbientLight * color.rgb;\n' +
+  '  vec3 ambient = u_AmbientLight * color.rgb;\n' +
     //directional light
   '  vec3 colorDirectionalLight = vec3(1.0, 1.0, 1.0);\n' +  // Robot color
   '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
@@ -137,6 +137,7 @@ var MOUSE_FSHADER_SOURCE =
   'uniform sampler2D u_Sampler;\n' +
   'uniform vec3 u_TorchColor;\n' +     // Light color  
   'uniform vec3 u_AmbientLight;\n' +   // Ambient light color
+  'uniform vec4 u_ClickedColor;\n' +   // Ambient light color
   'uniform mat4 u_CameraMatrix;\n' +
   'uniform vec3 u_TorchPosition;\n' +
   'varying vec2 v_TexCoord;\n' +
@@ -145,7 +146,6 @@ var MOUSE_FSHADER_SOURCE =
   'uniform bool u_Clicked;\n' + // Mouse is pressed
   'void main() {\n' +
   '  vec4 color = texture2D(u_Sampler, v_TexCoord);\n' +
-
   '  vec3 normal = normalize(v_Normal);\n' +
   
   //diffuse light from light source
@@ -161,7 +161,7 @@ var MOUSE_FSHADER_SOURCE =
   '  vec3 diffuse =  diffuseCoef * u_TorchColor * color.rgb ;\n' +
 
   //ambient light
-  '  vec3 ambient = 0.8 * u_AmbientLight * color.rgb;\n' +
+  '  vec3 ambient = u_AmbientLight * color.rgb;\n' +
     //directional light
   '  vec3 colorDirectionalLight = vec3(1.0, 1.0, 1.0);\n' +  // Robot color
   '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
@@ -169,7 +169,7 @@ var MOUSE_FSHADER_SOURCE =
   '  vec3 directional = nDotL*colorDirectionalLight*color.rgb;\n' +
   '  gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
   '  if (u_Clicked) {\n' + //  Draw in red if mouse is pressed
-  '    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n' +
+  '    gl_FragColor = u_ClickedColor;\n' +
   '  }\n' +
   '}\n';
 
@@ -219,6 +219,12 @@ function main() {
     return;
   }
 
+  var treasure = initTreasureVertexBuffers(gl);
+  if (!treasure){
+    console.log('Failed to set treasure vertex information');
+    return;
+  }
+
   var halfFloorSideLength = 250.0;
   var floor = initFloorVertexBuffers(gl, halfFloorSideLength);
   if (!floor){
@@ -261,7 +267,7 @@ function main() {
     return;
   }
   //il tesoro si deve stampare con un'altra funzione non in drawtexobjects
-  var treasureTexture = init2DTexture(gl, texProgram, 'resources/wood.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
+  var treasureTexture = init2DTexture(gl, mouseProgram, 'resources/wood.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
   if (!floorTexture) {
     console.log('Failed to intialize the trasure texture.');
     return;
@@ -296,24 +302,8 @@ function main() {
   document.onkeyup = handleKeyUp;
 
 
-  var space = Math.floor((Math.random() * 4) + 1);
-  
-  if (space == 1) {
-    x_treas = Math.floor((Math.random() * 188.5) - 188.5);
-    z_treas = Math.floor((Math.random() * 188.5) - 188.5);
-    } else if (space == 2) {
-    x_treas = Math.floor((Math.random() * 145.5) - 145.5);
-    z_treas = Math.floor((Math.random() * 145.5) - 145.5);
-    } else if (space == 3) {
-    x_treas = Math.floor((Math.random() * 96.5) - 96.5);
-    z_treas = Math.floor((Math.random() * 96.5) - 96.5);
-    } else {
-    x_treas = Math.floor((Math.random() * 46.5) - 46.5);
-    z_treas = Math.floor((Math.random() * 46.5) - 46.5);
-    }
-  console.log('X location of treasure: ' + x_treas + 'Z location of treasure: ' + z_treas + '\n');
-
-
+	treasurePos = treasureRandomPos();
+	//setting mazewalls locations
 	var x0 = 50.0;
 	var z0 = 26.25;
 	var x1 = 100.0;
@@ -327,6 +317,7 @@ function main() {
 	var drawLocations = [x0, z0, x1, z1, x2, z2, x3, z3];
 
 	computeBlacklist(mazeWalls, blackLocations);
+  g_drawingColors  = [new Vector4(1.0,0.0,0.0,1.0), new Vector4(0.0,1.0,0.0,1.0), new Vector4(0.0,0.0,1.0,1.0), new Vector4(0.0,0.5,0.5,1.0), new Vector4(0.5,0.5,0.0,1.0), new Vector4(0.5,0.0,0.5,1.0), new Vector4(0.9,0.5,0.5,1.0)];
 
 	canvas.onmousedown = function(ev) {   // Mouse is pressed
     var x = ev.clientX, y = ev.clientY;
@@ -334,9 +325,8 @@ function main() {
     if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
       // If pressed position is inside <canvas>, check if it is above object
       var x_in_canvas = x - rect.left, y_in_canvas = rect.bottom - y;
-      var picked = check(gl, x_in_canvas, y_in_canvas, mouseProgram.u_Clicked, mouseProgram, door, doorTexture);
-      if (picked) alert('The cube was selected! ');
-
+      check(gl, x_in_canvas, y_in_canvas, mouseProgram.u_Clicked, mouseProgram, door, doorTexture);
+      if (g_picked) alert('The cube was selected! ');
     }
   }
 
@@ -349,9 +339,11 @@ function main() {
     animate();
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
-   	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, treasureTexture, x_treas, z_treas, drawLocations);
+   	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, drawLocations);
     drawTexAvatar(gl, texProgram, avatar, avatarTexture);
     drawTexDoors(gl, mouseProgram, door, doorTexture);
+    drawTexTreasure(gl, mouseProgram, treasure, treasureTexture, treasurePos[0], treasurePos[1]);
+
     
     window.requestAnimationFrame(tick, canvas);
 
@@ -360,58 +352,5 @@ function main() {
   tick();
 }
 
-function check(gl, x, y, u_Clicked, mouseProgram, door, doorTexture) {
-  var picked = false;
-  gl.uniform1i(u_Clicked, 1);  // Pass true to u_Clicked
-  drawTexDoors(gl, mouseProgram, door, doorTexture);
-  // Read pixel at the clicked position
-  var pixels = new Uint8Array(4); // Array for storing the pixel value
-  gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
 
-  if (pixels[0] == 255) // The mouse in on cube if R(pixels[0]) is 255
-    picked = true;
-
-  gl.uniform1i(u_Clicked, 0);  // Pass false to u_Clicked(rewrite the cube)
-  drawTexDoors(gl, mouseProgram, door, doorTexture);
-  
-  return picked;
-}
-// Assign the buffer objects and enable the assignment
-function initAttributeVariable(gl, a_attribute, buffer) {
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.vertexAttribPointer(a_attribute, buffer.num, buffer.type, false, 0, 0);
-  gl.enableVertexAttribArray(a_attribute);
-}
-
-function initArrayBufferForLaterUse(gl, data, num, type) {
-  var buffer = gl.createBuffer();   // Create a buffer object
-  if (!buffer) {
-    console.log('Failed to create the buffer object');
-    return null;
-  }
-  // Write date into the buffer object
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
-
-  // Keep the information necessary to assign to the attribute variable later
-  buffer.num = num;
-  buffer.type = type;
-
-  return buffer;
-}
-
-function initElementArrayBufferForLaterUse(gl, data, type) {
-  var buffer = gl.createBuffer();　  // Create a buffer object
-  if (!buffer) {
-    console.log('Failed to create the buffer object');
-    return null;
-  }
-  // Write date into the buffer object
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
-
-  buffer.type = type;
-
-  return buffer;
-}
 

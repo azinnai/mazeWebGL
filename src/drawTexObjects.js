@@ -66,12 +66,14 @@ function getMouseProgramLocations(gl, mouseProgram){
   mouseProgram.u_AmbientLight = gl.getUniformLocation(mouseProgram, 'u_AmbientLight');
   mouseProgram.u_TorchPosition = gl.getUniformLocation(mouseProgram, 'u_TorchPosition');
   mouseProgram.u_Clicked = gl.getUniformLocation(mouseProgram, 'u_Clicked');
+  mouseProgram.u_ClickedColor = gl.getUniformLocation(mouseProgram, 'u_ClickedColor');
 
 
   if (mouseProgram.a_Position < 0 || mouseProgram.a_Normal < 0 || mouseProgram.a_TexCoord < 0 ||
     !mouseProgram.u_MvpMatrix || !mouseProgram.u_NormalMatrix || !mouseProgram.u_ModelMatrix || 
     !mouseProgram.u_CameraMatrix || !mouseProgram.u_Sampler || !mouseProgram.u_TorchColor ||
-    !mouseProgram.u_AmbientLight || !mouseProgram.u_TorchPosition || !mouseProgram.u_Clicked) { 
+    !mouseProgram.u_AmbientLight || !mouseProgram.u_TorchPosition || !mouseProgram.u_Clicked ||
+    !mouseProgram.u_ClickedColor) { 
     console.log('Failed to get the storage location of attribute or uniform variable'); 
     return;
   }
@@ -111,7 +113,7 @@ function drawFloor(gl, program, o){
   g_normalMatrix.transpose();
   var lightDirection = new Vector3([xPos, yPos, zPos]);
   //lightDirection.normalize();
-// Normalize
+  // Normalize
   gl.uniform3fv(program.u_TorchPosition, lightDirection.elements);
   gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
   gl.uniformMatrix4fv(program.u_ModelMatrix, false, g_modelMatrix.elements);
@@ -119,8 +121,6 @@ function drawFloor(gl, program, o){
   gl.uniformMatrix4fv(program.u_CameraMatrix, false, g_cameraMatrix.elements);
 
   gl.drawElements(gl.TRIANGLES, o.numIndices, o.indexBuffer.type, 0);   // Draw
-
-
 }
 /*
 function drawSolidCube(gl, program, o, x) {
@@ -134,29 +134,14 @@ function drawSolidCube(gl, program, o, x) {
   drawCube(gl, program, o, x);   // Draw
 }
 */
-function drawTexCuboid(gl, program, o, texture, x, y, z, planeAngle) {
-  gl.useProgram(program);   // Tell that this program object is used
 
-  // Assign the buffer objects and enable the assignment
-  initAttributeVariable(gl, program.a_Position, o.vertexBuffer);  // Vertex coordinates
-  initAttributeVariable(gl, program.a_Normal, o.normalBuffer);    // Normal
-  initAttributeVariable(gl, program.a_TexCoord, o.texCoordBuffer);// Texture coordinates
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, o.indexBuffer); // Bind indices
-
-  // Bind texture object to texture unit 0
-  gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-
-  drawCuboid(gl, program, o, x, y, z, planeAngle); // Draw
-  //gl.bindTexture(gl.TEXTURE_2D, null);
+function drawTexTreasure(gl, program, treasure, texture, x, z){
+	  drawTexCuboid(gl, program, treasure, texture, x, 0.0, z, 90.0);
 }
 
-function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x, z, loc){
+function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
   //x,y,x coordinates are referred to center of mass
-
-
-  // DRAW TREASURE BOX
-  drawTexCuboid(gl, program, mazeWallsArray[0], treas_texture, x, 0.0, z, 90.0);
+  
 
   // LEVEL 0
   //right external wall
@@ -216,18 +201,36 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, treas_texture, x
 
 function drawTexDoors(gl, program, door, texture){
 
-	drawTexCuboid(gl, program, door, texture, -50.0, door.yUnits, 0.0, 90.0);
-	drawTexCuboid(gl, program, door, texture, 100.0, door.yUnits, 0.0, 90.0);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 100.0, 0.0);
-	drawTexCuboid(gl, program, door, texture, -150.0, door.yUnits, 0.0, 90.0);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, -149.0, 0.0);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 192.0, 0.0);
+  
+
+	drawTexCuboid(gl, program, door, texture, -50.0, door.yUnits, 0.0, 90.0, g_drawingColors[0], g_picked);
+	drawTexCuboid(gl, program, door, texture, 100.0, door.yUnits, 0.0, 90.0, g_drawingColors[1], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 100.0, 0.0, g_drawingColors[2], g_picked);
+	drawTexCuboid(gl, program, door, texture, -150.0, door.yUnits, 0.0, 90.0, g_drawingColors[3], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, -149.0, 0.0, g_drawingColors[4], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 192.0, 0.0, g_drawingColors[5], g_picked);
 
 }
 
+function drawTexCuboid(gl, program, o, texture, x, y, z, planeAngle, color=null, picked=false) {
+  gl.useProgram(program);   // Tell that this program object is used
 
+  if(picked){
+  	  gl.uniform4f(texProgram.u_TorchColor, color);
+  }
+  // Assign the buffer objects and enable the assignment
+  initAttributeVariable(gl, program.a_Position, o.vertexBuffer);  // Vertex coordinates
+  initAttributeVariable(gl, program.a_Normal, o.normalBuffer);    // Normal
+  initAttributeVariable(gl, program.a_TexCoord, o.texCoordBuffer);// Texture coordinates
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, o.indexBuffer); // Bind indices
 
+  // Bind texture object to texture unit 0
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
 
+  drawCuboid(gl, program, o, x, y, z, planeAngle); // Draw
+  //gl.bindTexture(gl.TEXTURE_2D, null);
+}
 
 
 // Coordinate transformation matrix
