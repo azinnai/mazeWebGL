@@ -1,7 +1,11 @@
 cosa da finire per il progetto.
 
 1) il robot ruota su se stesso e non intorno alla telecamera.
-2) implementare visuale orbitale con altri tasti diversi da sopra.
+2) implementare visuale orbitale con altri tasti diversi da sopra. 
+	le funzioni orbitali le trovi in questi link, già implementate circa, vanno solo adattate al nostro caso:
+	- https://threejs.org/examples/misc_controls_orbit.html
+	- https://github.com/mattdesl/three-orbit-controls
+	- https://github.com/Jam3/orbit-controls
 3) le porte si aprono come la scatola.
 4) la scatola contiene il tesoro di pulp fiction e quando la trovi il gioco finisce.
 5) pannello html per interazione con il codice javascript, e.g. cambio visual e istruzioni
