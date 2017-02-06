@@ -87,6 +87,7 @@ var g_jointArm2 = 0.0;  // The rotation angle of joint3 (degrees)
 var g_picked = 0.0;
 var g_drawingColors = []; 
 var g_selectedObjects = [false, false, false, false, false, false, false];
+var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
 var val1 = [];
 var val2 = [];
 var increment = true;
@@ -275,6 +276,25 @@ function animate() {
         }
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
+        var yDoorMax = 5.0;
+        var doorSpeed = 0.05;
+        var goingDown = [false, false, false, false, false, false];
+        console.log(g_doorYunits);
+        for(i = 0; i < g_selectedObjects.length; i++){
+        	if(g_selectedObjects[i]){
+        		if(g_doorYunits[i] < yDoorMax && !goingDown[i]){
+        			g_doorYunits[i] += doorSpeed * elapsed;
+        		} else if(g_doorYunits > 3.0) {
+        			g_doorYunits[i] -= doorSpeed * elapsed;
+        			goingDown[i] = true;
+        		} else {
+        			g_doorYunits[i] = 3.0;
+        			goingDown[i] = false;
+        		}
+
+        	}
+
+        }
         
     }
     lastTime = timeNow;

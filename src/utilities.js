@@ -19,22 +19,22 @@ function treasureRandomPos(){
 }
 
 function check(gl, x, y, u_Clicked, mouseProgram, door, doorTexture) {
-  g_picked = false;
+  g_picked = true;
 
   gl.uniform1i(u_Clicked, 1);  // Pass true to u_Clicked
   drawTexDoors(gl, mouseProgram, door, doorTexture);
   // Read pixel at the clicked position
   var pixels = new Uint8Array(4); // Array for storing the pixel value
   gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-          console.log('\n' + pixels[0]/255.0 + '\t' +  pixels[1]/255.0 + '\t' + pixels[2]/255.0)
-
+  console.log(pixels);
+  
   for(i = 0; i < g_drawingColors.length; i++){
-      if (pixels[0] == 255*g_drawingColors[i][0] && pixels[1] == 255*g_drawingColors[i][1] && pixels[2] == 255*g_drawingColors[i][2]){ // The mouse in on cube if R(pixels[0]) is 255
-        g_picked = true;
+      if (pixels[0] == Math.ceil(255*g_drawingColors[i][0]) && pixels[1] == Math.ceil(255*g_drawingColors[i][1]) && pixels[2] == Math.ceil(255*g_drawingColors[i][2])){ // The mouse in on cube if R(pixels[0]) is 255
         g_selectedObjects[i] = true;
       }   
   }
-  
+  g_picked = false;
+
   gl.uniform1i(u_Clicked, 0);  // Pass false to u_Clicked(rewrite the cube)
   drawTexDoors(gl, mouseProgram, door, doorTexture);
 }

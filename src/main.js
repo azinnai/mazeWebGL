@@ -137,7 +137,7 @@ var MOUSE_FSHADER_SOURCE =
   'uniform sampler2D u_Sampler;\n' +
   'uniform vec3 u_TorchColor;\n' +     // Light color  
   'uniform vec3 u_AmbientLight;\n' +   // Ambient light color
-  'uniform vec4 u_ClickedColor;\n' +   // Ambient light color
+  'uniform vec3 u_ClickedColor;\n' +   // Ambient light color
   'uniform mat4 u_CameraMatrix;\n' +
   'uniform vec3 u_TorchPosition;\n' +
   'varying vec2 v_TexCoord;\n' +
@@ -169,7 +169,7 @@ var MOUSE_FSHADER_SOURCE =
   '  vec3 directional = nDotL*colorDirectionalLight*color.rgb;\n' +
   '  gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
   '  if (u_Clicked) {\n' + //  Draw in red if mouse is pressed
-  '    gl_FragColor = u_ClickedColor;\n' +
+  '    gl_FragColor = vec4(u_ClickedColor, 1.0);\n' +
   '  }\n' +
   '}\n';
 
@@ -317,8 +317,7 @@ function main() {
 	var drawLocations = [x0, z0, x1, z1, x2, z2, x3, z3];
 
 	computeBlacklist(mazeWalls, blackLocations);
-  g_drawingColors  = [new Vector4(1.0,0.0,0.0,1.0), new Vector4(0.0,1.0,0.0,1.0), new Vector4(0.0,0.0,1.0,1.0), new Vector4(0.0,0.5,0.5,1.0), new Vector4(0.5,0.5,0.0,1.0), new Vector4(0.5,0.0,0.5,1.0), new Vector4(0.9,0.5,0.5,1.0)];
-
+  	g_drawingColors  = [[1.0,0.0,0.0], [0.0,1.0,0.0], [0.0,0.0,1.0], [0.0,0.5,0.5], [0.5,0.5,0.0], [0.5,0.0,0.5], [0.9,0.5,0.5]];
 	canvas.onmousedown = function(ev) {   // Mouse is pressed
     var x = ev.clientX, y = ev.clientY;
     var rect = ev.target.getBoundingClientRect();
@@ -326,7 +325,6 @@ function main() {
       // If pressed position is inside <canvas>, check if it is above object
       var x_in_canvas = x - rect.left, y_in_canvas = rect.bottom - y;
       check(gl, x_in_canvas, y_in_canvas, mouseProgram.u_Clicked, mouseProgram, door, doorTexture);
-      if (g_picked) alert('The cube was selected! ');
     }
   }
 

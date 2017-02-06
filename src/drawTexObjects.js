@@ -202,13 +202,13 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
 function drawTexDoors(gl, program, door, texture){
 
   
+	drawTexCuboid(gl, program, door, texture, -50.0, g_doorYunits, 0.0, 90.0, g_drawingColors[0], g_picked);
+	drawTexCuboid(gl, program, door, texture, 100.0, g_doorYunits, 0.0, 90.0, g_drawingColors[1], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits, 100.0, 0.0, g_drawingColors[2], g_picked);
+	drawTexCuboid(gl, program, door, texture, -150.0, g_doorYunits, 0.0, 90.0, g_drawingColors[3], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits, -149.0, 0.0, g_drawingColors[4], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits, 192.0, 0.0, g_drawingColors[5], g_picked);
 
-	drawTexCuboid(gl, program, door, texture, -50.0, door.yUnits, 0.0, 90.0, g_drawingColors[0], g_picked);
-	drawTexCuboid(gl, program, door, texture, 100.0, door.yUnits, 0.0, 90.0, g_drawingColors[1], g_picked);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 100.0, 0.0, g_drawingColors[2], g_picked);
-	drawTexCuboid(gl, program, door, texture, -150.0, door.yUnits, 0.0, 90.0, g_drawingColors[3], g_picked);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, -149.0, 0.0, g_drawingColors[4], g_picked);
-	drawTexCuboid(gl, program, door, texture, 0.0, door.yUnits, 192.0, 0.0, g_drawingColors[5], g_picked);
 
 }
 
@@ -216,7 +216,7 @@ function drawTexCuboid(gl, program, o, texture, x, y, z, planeAngle, color=null,
   gl.useProgram(program);   // Tell that this program object is used
 
   if(picked){
-  	  gl.uniform4f(texProgram.u_TorchColor, color);
+  	  gl.uniform3f(program.u_ClickedColor, color[0], color[1], color[2]);
   }
   // Assign the buffer objects and enable the assignment
   initAttributeVariable(gl, program.a_Position, o.vertexBuffer);  // Vertex coordinates
