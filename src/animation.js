@@ -88,6 +88,10 @@ var g_picked = 0.0;
 var g_drawingColors = []; 
 var g_selectedObjects = [false, false, false, false, false, false, false];
 var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
+var goingDown = [false, false, false, false, false, false];
+var timeUPDoor = 3.0;
+var g_doorUP = [false, false, false, false, false, false];
+
 var val1 = [];
 var val2 = [];
 var increment = true;
@@ -276,15 +280,16 @@ function animate() {
         }
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
-        var yDoorMax = 5.0;
-        var doorSpeed = 0.05;
-        var goingDown = [false, false, false, false, false, false];
+        var yDoorMax = 8.0;
+        var yDoorMin = 3.0;
+        var doorSpeed = 0.0005;
         console.log(g_doorYunits);
         for(i = 0; i < g_selectedObjects.length; i++){
-        	if(g_selectedObjects[i]){
+        	if(g_selectedObjects[i] && g_doorUP){
         		if(g_doorYunits[i] < yDoorMax && !goingDown[i]){
         			g_doorYunits[i] += doorSpeed * elapsed;
-        		} else if(g_doorYunits > 3.0) {
+        		} else if(g_doorYunits[i] > yDoorMin) {
+        			console.log('Hereee');
         			g_doorYunits[i] -= doorSpeed * elapsed;
         			goingDown[i] = true;
         		} else {

@@ -202,12 +202,12 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
 function drawTexDoors(gl, program, door, texture){
 
   
-	drawTexCuboid(gl, program, door, texture, -50.0, g_doorYunits, 0.0, 90.0, g_drawingColors[0], g_picked);
-	drawTexCuboid(gl, program, door, texture, 100.0, g_doorYunits, 0.0, 90.0, g_drawingColors[1], g_picked);
-	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits, 100.0, 0.0, g_drawingColors[2], g_picked);
-	drawTexCuboid(gl, program, door, texture, -150.0, g_doorYunits, 0.0, 90.0, g_drawingColors[3], g_picked);
-	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits, -149.0, 0.0, g_drawingColors[4], g_picked);
-	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits, 192.0, 0.0, g_drawingColors[5], g_picked);
+	drawTexCuboid(gl, program, door, texture, -50.0, g_doorYunits[0], 0.0, 90.0, g_drawingColors[0], g_picked);
+	drawTexCuboid(gl, program, door, texture, 100.0, g_doorYunits[1], 0.0, 90.0, g_drawingColors[1], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits[2], 100.0, 0.0, g_drawingColors[2], g_picked);
+	drawTexCuboid(gl, program, door, texture, -150.0, g_doorYunits[3], 0.0, 90.0, g_drawingColors[3], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits[4], -149.0, 0.0, g_drawingColors[4], g_picked);
+	drawTexCuboid(gl, program, door, texture, 0.0, g_doorYunits[5], 192.0, 0.0, g_drawingColors[5], g_picked);
 
 
 }
