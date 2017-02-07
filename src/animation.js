@@ -99,9 +99,9 @@ var pitch = 0;
 var pitchRate = 0;
 var yaw = 0;
 var yawRate = 0;
-var xPos = 0.056478155032779295;  
+var xPos = 0.0;  
 var yPos = 1.4;
-var zPos = 201.7057334788756;
+var zPos = 240.7057334788756;
 var speed = 0;
 
 // disegno avatar
@@ -310,7 +310,7 @@ function animate() {
             zPosNew -= Math.cos(degToRad(yaw)) * speed * elapsed;
             joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
-
+console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
             if(checkBlackList(xPosNew,zPosNew)){
             	xPos = xPosNew;
             	zPos = zPosNew;
@@ -325,7 +325,7 @@ function animate() {
         }
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
-        var yDoorMax = 8.0;
+        var yDoorMax = 9.0;
         var yDoorMin = 3.0;
         var doorSpeed = 0.0005;
         for(i = 0; i < g_selectedDoors.length; i++){

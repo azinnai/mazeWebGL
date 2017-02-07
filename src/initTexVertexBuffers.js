@@ -54,6 +54,46 @@ function initMazeVertexBuffers(gl) {
   mazeWalls[8].xUnits = xUnits1;
   mazeWalls[8].yUnits = yUnits0;
 
+  // EXTENSIONS AT DOORS
+  xUnits0 = 1.0;
+  yUnits0 = 6.0;
+  xUnits1 = 51.0;
+  yUnits1 = 1.0;
+  xUnits2 = 101.0;
+  xUnits3 = 150.0;
+  xUnits4 = 193.0;
+  xUnits5 = 3.0;
+  xUnits6 = 13.0;
+
+  
+  mazeWalls[9] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[10] = initCubeVertexBuffers(gl, xUnits1, yUnits1);
+  mazeWalls[11] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[12] = initCubeVertexBuffers(gl, xUnits2, yUnits1);
+  mazeWalls[13] = initCubeVertexBuffers(gl, xUnits3, yUnits1);
+  mazeWalls[14] = initCubeVertexBuffers(gl, xUnits4, yUnits1);
+  mazeWalls[15] = initCubeVertexBuffers(gl, xUnits5, yUnits0);
+  mazeWalls[16] = initCubeVertexBuffers(gl, xUnits6, yUnits1);
+  mazeWalls[9].xUnits = xUnits0;
+  mazeWalls[9].yUnits = yUnits0;
+  mazeWalls[10].xUnits = xUnits1;
+  mazeWalls[10].yUnits = yUnits1;
+  mazeWalls[11].xUnits = xUnits0;
+  mazeWalls[11].yUnits = yUnits0;
+  mazeWalls[12].xUnits = xUnits2;
+  mazeWalls[12].yUnits = yUnits1;
+  mazeWalls[13].xUnits = xUnits3;
+  mazeWalls[13].yUnits = yUnits1;
+  mazeWalls[14].xUnits = xUnits4;
+  mazeWalls[14].yUnits = yUnits1;
+  mazeWalls[15].xUnits = xUnits5;
+  mazeWalls[15].yUnits = yUnits0;
+  mazeWalls[16].xUnits = xUnits6;
+  mazeWalls[16].yUnits = yUnits1;
+
+
+
+
 
 
 

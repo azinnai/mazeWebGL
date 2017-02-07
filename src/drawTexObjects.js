@@ -154,7 +154,7 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
   drawTexCuboid(gl, program, mazeWallsArray[1], texture, 0.0, mazeWallsArray[1].yUnits, -loc[0], 0.0);
   //bottom external wall
   drawTexCuboid(gl, program, mazeWallsArray[1], texture, 0.0, mazeWallsArray[1].yUnits, loc[0], 0.0);
-
+  
 
   // LEVEL 1
   //right external wall 1
@@ -197,6 +197,96 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
   drawTexCuboid(gl, program, mazeWallsArray[8], texture, -loc[7], mazeWallsArray[8].yUnits, loc[6], 0.0);
   //bottom external wall 2
   drawTexCuboid(gl, program, mazeWallsArray[8], texture, loc[7], mazeWallsArray[8].yUnits, loc[6], 0.0);
+
+  // EXTENSIONS AT DOORS
+  // inner tamarrate
+  drawTexCuboid(gl, program, mazeWallsArray[10], texture, 0.0, mazeWallsArray[10].yUnits+12.0, loc[0], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[10], texture, loc[0], mazeWallsArray[10].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[10], texture, 0.0, mazeWallsArray[10].yUnits+12.0, -loc[0], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[10], texture, -loc[0], mazeWallsArray[10].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, -loc[0]-2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, -loc[0]+2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[0], mazeWallsArray[15].yUnits, -4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[0], mazeWallsArray[15].yUnits, 4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[0], mazeWallsArray[15].yUnits, -8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[0], mazeWallsArray[15].yUnits, 8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[0], mazeWallsArray[15].yUnits, -12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[0], mazeWallsArray[15].yUnits, 12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[0], mazeWallsArray[11].yUnits, -50.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[0], mazeWallsArray[11].yUnits, 50.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[0], mazeWallsArray[11].yUnits, -50.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[0], mazeWallsArray[11].yUnits, 50.0, 0.0);
+
+  //level 1 tamarrate
+  drawTexCuboid(gl, program, mazeWallsArray[12], texture, 0.0, mazeWallsArray[12].yUnits+12.0, loc[2], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, loc[2]+2.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, loc[2]-2.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[12], texture, loc[2], mazeWallsArray[12].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, loc[2]+2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, loc[2]-2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[12], texture, 0.0, mazeWallsArray[12].yUnits+12.0, -loc[2], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[12], texture, -loc[2], mazeWallsArray[12].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -4.0, mazeWallsArray[15].yUnits, loc[2], -90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, 4.0, mazeWallsArray[15].yUnits, loc[2], -90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -8.0, mazeWallsArray[15].yUnits, loc[2], -90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, 8.0, mazeWallsArray[15].yUnits, loc[2], -90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -12.0, mazeWallsArray[15].yUnits, loc[2], -90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, 12.0, mazeWallsArray[15].yUnits, loc[2], -90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, loc[2], mazeWallsArray[15].yUnits, -4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, loc[2], mazeWallsArray[15].yUnits, 4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, loc[2], mazeWallsArray[15].yUnits, -8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, loc[2], mazeWallsArray[15].yUnits, 8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, loc[2], mazeWallsArray[15].yUnits, -12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, loc[2], mazeWallsArray[15].yUnits, 12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[2], mazeWallsArray[11].yUnits, -100.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[2], mazeWallsArray[11].yUnits, 100.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[2], mazeWallsArray[11].yUnits, -100.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[2], mazeWallsArray[11].yUnits, 100.0, 0.0);
+
+  //level 2 tamarrate
+  drawTexCuboid(gl, program, mazeWallsArray[13], texture, 0.0, mazeWallsArray[13].yUnits+12.0, loc[4]-1.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[13], texture, loc[4], mazeWallsArray[13].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[13], texture, 0.0, mazeWallsArray[13].yUnits+12.0, -loc[4]+1.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, -loc[4]+3.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, -loc[4]-1.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[13], texture, -loc[4], mazeWallsArray[13].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, -loc[4]-2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, -loc[4]+2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, -4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, 4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, -8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, 8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, -12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, 12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -4.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture,  4.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -8.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture,  8.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -12.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture,  12.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[4], mazeWallsArray[11].yUnits, -149.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[4], mazeWallsArray[11].yUnits, 149.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[4], mazeWallsArray[11].yUnits, -149.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[4], mazeWallsArray[11].yUnits, 149.0, 0.0);
+
+  //level 3 tamarrate
+  drawTexCuboid(gl, program, mazeWallsArray[14], texture, 0.0, mazeWallsArray[14].yUnits+12.0, loc[6], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, loc[6]+2.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, loc[6]-2.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[14], texture, loc[6], mazeWallsArray[14].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[14], texture, 0.0, mazeWallsArray[14].yUnits+12.0, -loc[6], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[14], texture, -loc[6], mazeWallsArray[14].yUnits+12.0, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -4.0, mazeWallsArray[15].yUnits, loc[6], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture,  4.0, mazeWallsArray[15].yUnits, loc[6], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -8.0, mazeWallsArray[15].yUnits, loc[6], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture,  8.0, mazeWallsArray[15].yUnits, loc[6], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -12.0, mazeWallsArray[15].yUnits, loc[6], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture,  12.0, mazeWallsArray[15].yUnits, loc[6], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[6], mazeWallsArray[11].yUnits, -192.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, -loc[6], mazeWallsArray[11].yUnits, 192.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[6], mazeWallsArray[11].yUnits, -192.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[6], mazeWallsArray[11].yUnits, 192.0, 0.0);
+  
 }
 
 function drawTexDoors(gl, program, door, texture){
