@@ -200,6 +200,18 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
 }
 
 function drawTexDoors(gl, program, door, texture){
+  var x0 = -50.0;
+  var x1 = 100.0;
+  var x2 = 0;
+  var x3 = -150.0;
+  var x4 = 0.0;
+  var x5 = 0.0;
+  var z0 = 0.0;
+  var z1 = 0.0;
+  var z2 = 100.0;
+  var z3 = 0.0;
+  var z4 = -149.0;
+  var z5 = 192.0;
 
 
 
@@ -210,11 +222,6 @@ function drawTexDoors(gl, program, door, texture){
 	drawTexCuboid(gl, program, door, texture, x4, g_doorYunits[4], z4, 0.0, g_drawingColors[4], g_picked);
 	drawTexCuboid(gl, program, door, texture, x5, g_doorYunits[5], z5, 0.0, g_drawingColors[5], g_picked);
 
-for(i = 0; i < g_selectedObjects.length; i++) {
-  if(g_selectedObjects[i]) {
-    
-  }
-}
 
 
 }

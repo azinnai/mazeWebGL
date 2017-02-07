@@ -26,11 +26,10 @@ function check(gl, x, y, u_Clicked, mouseProgram, door, doorTexture) {
   // Read pixel at the clicked position
   var pixels = new Uint8Array(4); // Array for storing the pixel value
   gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-  console.log(pixels);
   
   for(i = 0; i < g_drawingColors.length; i++){
       if (pixels[0] == Math.ceil(255*g_drawingColors[i][0]) && pixels[1] == Math.ceil(255*g_drawingColors[i][1]) && pixels[2] == Math.ceil(255*g_drawingColors[i][2])){ // The mouse in on cube if R(pixels[0]) is 255
-        g_selectedObjects[i] = true;
+        g_selectedDoors[i] = true;
       }   
   }
   g_picked = false;

@@ -33,23 +33,23 @@ function checkWhiteList(x,z){
   var insideEXT = false;
   var insideINT = false;
   for (i = 0; i < whitelist.length; i++){
-    if(whitelist[i][0][0]-x > 0 && blacklist[i][0][1] - z > 0){
+    if(whitelist[i][0][0]-x > 0 && whitelist[i][0][1] - z > 0){
       insideEXT = true;
     }
 
-    if(blacklist[i][1][0]-x < 0 && blacklist[i][1][1] - z < 0){
+    if(whitelist[i][1][0]-x < 0 && whitelist[i][1][1] - z < 0){
       insideINT = true;
     }
 
-    if( insideINT && insideEXT ) {
-      return false;
+    if( insideINT && insideEXT && g_doorIsOpen[i]) {
+      return true;
     }
     insideEXT = false;
     insideINT = false;
   }
-  return true;
+  return false;
  }
-}
+
 
 
  function checkBlackList(x,z){
@@ -289,11 +289,13 @@ function handleKeys() {
 var lastTime = 0;
     // Used to make us "jog" up and down as we move forward.
 var joggingAngle = 0;
-var g_selectedObjects = [false, false, false, false, false, false, false];
-var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
+var g_selectedDoors = [false, false, false, false, false, false];
+var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
 var goingDown = [false, false, false, false, false, false];
 var timeUPDoor = 3.0;
 var g_doorUP = [false, false, false, false, false, false];
+var g_doorIsOpen = [false, false, false, false, false, false];
+
 
 function animate() {
     var timeNow = new Date().getTime();
@@ -309,34 +311,41 @@ function animate() {
             joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
 
-            if(checkBlackList(xPosNew,zPosNew) && checkWhiteList(xPosNew,zPosNew)){
+            if(checkBlackList(xPosNew,zPosNew)){
             	xPos = xPosNew;
             	zPos = zPosNew;
             	joggingAngle = joggingAngleNew;
             	yPos = yPosNew;
-            }
+            } else if(checkWhiteList(xPosNew, zPosNew)){
+            	xPos = xPosNew;
+            	zPos = zPosNew;
+            	joggingAngle = joggingAngleNew;
+            	yPos = yPosNew;	
+            } 
         }
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
         var yDoorMax = 8.0;
         var yDoorMin = 3.0;
         var doorSpeed = 0.0005;
-        console.log(g_doorYunits);
-        for(i = 0; i < g_selectedObjects.length; i++){
-        	if(g_selectedObjects[i] && g_doorUP){
+        for(i = 0; i < g_selectedDoors.length; i++){
+        	if(g_selectedDoors[i] && g_doorUP){
         		if(g_doorYunits[i] < yDoorMax && !goingDown[i]){
         			g_doorYunits[i] += doorSpeed * elapsed;
-
         		} else if(g_doorYunits[i] > yDoorMin) {
-        			console.log('Hereee');
         			g_doorYunits[i] -= doorSpeed * elapsed;
         			goingDown[i] = true;
         		} else {
         			g_doorYunits[i] = 3.0;
         			goingDown[i] = false;
-              g_selectedObjects[i] = false;
+              		g_selectedDoors[i] = false;
         		}
 
+        	}
+        	if(g_doorYunits[i] > 5.0){
+        		g_doorIsOpen[i] = true;
+        	} else {
+        		g_doorIsOpen[i] = false;
         	}
 
         }
