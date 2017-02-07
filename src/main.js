@@ -313,10 +313,26 @@ function main() {
 	var x3 = 192.0;
 	var z3 = 98.0;
 	var blackLocations = [x0, x1, x2, x3, halfFloorSideLength];
+  computeBlackList(mazeWalls, blackLocations);
 
 	var drawLocations = [x0, z0, x1, z1, x2, z2, x3, z3];
 
-	computeBlacklist(mazeWalls, blackLocations);
+  var x0D = -50.0;
+  var x1D = 100.0;
+  var x2D = 0;
+  var x3D = -150.0;
+  var x4D = 0.0;
+  var x5D = 0.0;
+  var z0D = 0.0;
+  var z1D = 0.0;
+  var z2D = 100.0;
+  var z3D = 0.0;
+  var z4D = -149.0;
+  var z5D = 192.0;
+
+  var doorLocations = [[x0D,z0D], [x1D,z1D], [x2D,z2D], [x3D,z3D], [x4D,z4D], [x5D,z5D]];
+  computeWhiteList(doorLocations);
+
   	g_drawingColors  = [[1.0,0.0,0.0], [0.0,1.0,0.0], [0.0,0.0,1.0], [0.0,0.5,0.5], [0.5,0.5,0.0], [0.5,0.0,0.5], [0.9,0.5,0.5]];
 	canvas.onmousedown = function(ev) {   // Mouse is pressed
     var x = ev.clientX, y = ev.clientY;

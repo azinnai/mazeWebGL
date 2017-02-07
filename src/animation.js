@@ -1,6 +1,7 @@
 var blacklist = [];
+var whitelist = [];
 
-function computeBlacklist(mazeWallsArray, locations) {
+function computeBlackList(mazeWallsArray, locations) {
 
 	//faccio la treasure box
 
@@ -14,6 +15,42 @@ function computeBlacklist(mazeWallsArray, locations) {
 		blacklist[i] = [[x0,z0], [x1,z1]];
 	} 
  }
+
+ function computeWhiteList(locations) {
+
+  for (i = 0; i < locations.length; i++) {
+    
+    x0 = locations[i][0]+2.0;
+    x1 = x0-4.0;
+    z0 = locations[i][1]+2.0;//mazeWallsArray[i+1].xUnits;
+    z1 = z0-4.0;
+    
+    whitelist[i] = [[x0,z0], [x1,z1]];
+  } 
+} 
+
+function checkWhiteList(x,z){
+  var insideEXT = false;
+  var insideINT = false;
+  for (i = 0; i < whitelist.length; i++){
+    if(whitelist[i][0][0]-x > 0 && blacklist[i][0][1] - z > 0){
+      insideEXT = true;
+    }
+
+    if(blacklist[i][1][0]-x < 0 && blacklist[i][1][1] - z < 0){
+      insideINT = true;
+    }
+
+    if( insideINT && insideEXT ) {
+      return false;
+    }
+    insideEXT = false;
+    insideINT = false;
+  }
+  return true;
+ }
+}
+
 
  function checkBlackList(x,z){
  	var insideEXT = false;
@@ -86,11 +123,7 @@ var g_jointArm1 = 0.0;  // The rotation angle of joint3 (degrees)
 var g_jointArm2 = 0.0;  // The rotation angle of joint3 (degrees)
 var g_picked = 0.0;
 var g_drawingColors = []; 
-var g_selectedObjects = [false, false, false, false, false, false, false];
-var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
-var goingDown = [false, false, false, false, false, false];
-var timeUPDoor = 3.0;
-var g_doorUP = [false, false, false, false, false, false];
+
 
 var val1 = [];
 var val2 = [];
@@ -256,6 +289,11 @@ function handleKeys() {
 var lastTime = 0;
     // Used to make us "jog" up and down as we move forward.
 var joggingAngle = 0;
+var g_selectedObjects = [false, false, false, false, false, false, false];
+var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
+var goingDown = [false, false, false, false, false, false];
+var timeUPDoor = 3.0;
+var g_doorUP = [false, false, false, false, false, false];
 
 function animate() {
     var timeNow = new Date().getTime();
@@ -271,7 +309,7 @@ function animate() {
             joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
 
-            if(checkBlackList(xPosNew,zPosNew)){
+            if(checkBlackList(xPosNew,zPosNew) && checkWhiteList(xPosNew,zPosNew)){
             	xPos = xPosNew;
             	zPos = zPosNew;
             	joggingAngle = joggingAngleNew;
@@ -288,6 +326,7 @@ function animate() {
         	if(g_selectedObjects[i] && g_doorUP){
         		if(g_doorYunits[i] < yDoorMax && !goingDown[i]){
         			g_doorYunits[i] += doorSpeed * elapsed;
+
         		} else if(g_doorYunits[i] > yDoorMin) {
         			console.log('Hereee');
         			g_doorYunits[i] -= doorSpeed * elapsed;
@@ -295,6 +334,7 @@ function animate() {
         		} else {
         			g_doorYunits[i] = 3.0;
         			goingDown[i] = false;
+              g_selectedObjects[i] = false;
         		}
 
         	}
