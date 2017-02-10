@@ -90,13 +90,14 @@ function setCubeFace(gl, texture, face, imgdata) {
 function drawTexSkyBox(gl, program, o, texture) {
   gl.useProgram(program);
 
-  //gl.uniform1i( this . skyBoxShader . uCubeMapLocation , 0) ;
   gl.activeTexture(gl.TEXTURE0);
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+  gl.disable(gl.DEPTH_TEST);
   gl.depthMask(false);
   
   drawSkyBox(gl, program, o);
 
+  gl.enable(gl.DEPTH_TEST);
   gl.depthMask(true);
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
   

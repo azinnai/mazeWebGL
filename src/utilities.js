@@ -18,24 +18,34 @@ function treasureRandomPos(){
   return [x_treas,z_treas];
 }
 
-function check(gl, x, y, u_Clicked, mouseProgram, door, doorTexture) {
+function check(gl, x, y, u_Clicked, mouseProgram, door, doorTexture, treasure, treasureTexture) {
   g_picked = true;
 
   gl.uniform1i(u_Clicked, 1);  // Pass true to u_Clicked
+  drawTexTreasure(gl, mouseProgram, treasure, treasureTexture);
   drawTexDoors(gl, mouseProgram, door, doorTexture);
   // Read pixel at the clicked position
   var pixels = new Uint8Array(4); // Array for storing the pixel value
   gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-  
-  for(i = 0; i < g_drawingColors.length; i++){
+  console.log(pixels);
+
+  if (pixels[0] == Math.ceil(255*g_drawingColors[6][0]) && pixels[1] == Math.ceil(255*g_drawingColors[6][1]) && pixels[2] == Math.ceil(255*g_drawingColors[6][2])){
+    g_selectedTreasure = true;
+    console.log('trrrrrrrrrrrrrrrrrr');
+  }
+
+  for(i = 0; i < g_selectedDoors.length; i++){
       if (pixels[0] == Math.ceil(255*g_drawingColors[i][0]) && pixels[1] == Math.ceil(255*g_drawingColors[i][1]) && pixels[2] == Math.ceil(255*g_drawingColors[i][2])){ // The mouse in on cube if R(pixels[0]) is 255
         g_selectedDoors[i] = true;
       }   
   }
+
   g_picked = false;
 
   gl.uniform1i(u_Clicked, 0);  // Pass false to u_Clicked(rewrite the cube)
   drawTexDoors(gl, mouseProgram, door, doorTexture);
+  drawTexTreasure(gl, mouseProgram, treasure, treasureTexture);
+
 }
 
 // Assign the buffer objects and enable the assignment

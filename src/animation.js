@@ -290,6 +290,10 @@ var lastTime = 0;
     // Used to make us "jog" up and down as we move forward.
 var joggingAngle = 0;
 var g_selectedDoors = [false, false, false, false, false, false];
+var g_selectedTreasure = false;
+var g_treasureYunits = 0.5;
+var g_treasureYunitsMax = 3.0;
+var g_gameEnd = false;
 var g_doorYunits = [3.0, 3.0, 3.0, 3.0, 3.0, 3.0];
 var goingDown = [false, false, false, false, false, false];
 var timeUPDoor = 3.0;
@@ -310,7 +314,7 @@ function animate() {
             zPosNew -= Math.cos(degToRad(yaw)) * speed * elapsed;
             joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
-console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
+//console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
             if(checkBlackList(xPosNew,zPosNew)){
             	xPos = xPosNew;
             	zPos = zPosNew;
@@ -327,7 +331,7 @@ console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
         pitch += pitchRate * elapsed;
         var yDoorMax = 9.0;
         var yDoorMin = 3.0;
-        var doorSpeed = 0.0005;
+        var doorSpeed = 0.001;
         for(i = 0; i < g_selectedDoors.length; i++){
         	if(g_selectedDoors[i] && g_doorUP){
         		if(g_doorYunits[i] < yDoorMax && !goingDown[i]){
@@ -348,6 +352,13 @@ console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
         		g_doorIsOpen[i] = false;
         	}
 
+        }
+
+        if(g_selectedTreasure){
+        	g_treasureYunits += doorSpeed * elapsed;
+        } 
+        if(g_treasureYunits > g_treasureYunitsMax) {
+        	g_gameEnd = true;
         }
         
     }
