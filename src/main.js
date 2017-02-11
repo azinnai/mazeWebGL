@@ -360,6 +360,7 @@ function main() {
   var bT = 1.0;
 
   var tick = function() {
+
     
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // Clear color and depth buffers
 
@@ -372,14 +373,15 @@ function main() {
       bT = Math.random();
       //var factor = treasureYUnits/treasureYUnitsMax;
       var factor = 1.0;
-      treasureFounded = true;
+      treasureFound = true;
       gl.useProgram(texProgram);
       gl.uniform1i(texProgram.u_TreasureFound, 1);  // Pass true to u_Clicked
       gl.uniform3f(texProgram.u_TreasureLight, rT*factor, gT*factor, bT*factor);
     }
 
     if(treasureYUnits > treasureYUnitsMax){
-      console.log('endeeeeed');
+
+       window.alert("Yuppy!! You have found the treasure!!!");
     }
 
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);

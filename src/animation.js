@@ -139,8 +139,7 @@ function handleKeys() {
     } else if (currentlyPressedKeys[68]) {
         // D
         yawRate = -0.05;
-    } else
-    if (currentlyPressedKeys[80]) {
+    } else if (currentlyPressedKeys[80]) {
         // P
         pitchRate = 0.05;
     } else if (currentlyPressedKeys[76]) {
@@ -155,10 +154,11 @@ function handleKeys() {
     } else if (currentlyPressedKeys[39]) {
         // Right cursor key
         yawRate = -0.05;
-
     } else {
         yawRate = 0;
     }
+
+
     if (currentlyPressedKeys[38]) {
         // Up cursor key
         speed = 0.03;
@@ -169,121 +169,123 @@ function handleKeys() {
         speed = 0;
     }
 
-    if (currentlyPressedKeys[38]) {
-        if(lastDown = false){
-          if(increment = true){
-            increment = false;
-            decrement = true;
-          } else {
-            increment = true;
-            decrement = false;
-          }
-      }
+    if(!treasureFound){ 	
+	    if (currentlyPressedKeys[38]) {
+	        if(lastDown = false){
+	          if(increment = true){
+	            increment = false;
+	            decrement = true;
+	          } else {
+	            increment = true;
+	            decrement = false;
+	          }
+	      }
 
-      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
-        increment = false;
-        decrement = true;
-      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
-        increment = true;
-        decrement = false;
-      }
+	      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
+	        increment = false;
+	        decrement = true;
+	      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
+	        increment = true;
+	        decrement = false;
+	      }
 
-    
-      lastUp = true;
-      lastDown = false;
+	    
+	      lastUp = true;
+	      lastDown = false;
 
-      if (increment) { 
-        g_jointHip1 += step/hipInterval;
-        g_jointHip2 -= step/hipInterval;
-      } else if (decrement) { 
-        g_jointHip1 -= step/hipInterval;
-        g_jointHip2 += step/hipInterval;
-      } 
-
-
-      if (increment) { 
-        g_jointKnee1 -= step/kneeInterval;
-        g_jointKnee2 += step/kneeInterval;
-      } else if (decrement) { 
-        g_jointKnee1 += step/kneeInterval;
-        g_jointKnee2 -= step/kneeInterval;
-      } 
-    
-      if (increment) { 
-        g_jointArm1 += step/armInterval;
-        g_jointArm2 -= step/armInterval;
-      } else if (decrement) { 
-        g_jointArm1 -= step/armInterval;
-        g_jointArm2 += step/armInterval;
-      }
-
-      if (increment) { 
-        g_jointAnkle1 += step/ankleInterval;
-        g_jointAnkle2 -= step/ankleInterval;
-      } else if (decrement) { 
-        g_jointAnkle1 -= step/ankleInterval;
-        g_jointAnkle2 += step/ankleInterval;
-      }
-
-    } 
-
-    if (currentlyPressedKeys[40]){
-      if(lastUp = false){
-          if(increment = true){
-            increment = false;
-            decrement = true;
-          } else{
-            increment = true;
-            decrement = false;
-          }
-      }
-
-      lastDown = true;
-      lastUp = false;
-   
-
-      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
-        increment = true;
-        decrement = false;
-      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
-        increment = false;
-        decrement = true;
-      }
-      
-      if (increment) { 
-        g_jointHip1 -= step/hipInterval;
-        g_jointHip2 += step/hipInterval;
-      } else if (decrement) { 
-        g_jointHip1 += step/hipInterval;
-        g_jointHip2 -= step/hipInterval;
-      } 
+	      if (increment) { 
+	        g_jointHip1 += step/hipInterval;
+	        g_jointHip2 -= step/hipInterval;
+	      } else if (decrement) { 
+	        g_jointHip1 -= step/hipInterval;
+	        g_jointHip2 += step/hipInterval;
+	      } 
 
 
-      if (increment) { 
-        g_jointKnee1 += step/kneeInterval;
-        g_jointKnee2 -= step/kneeInterval;
-      } else if (decrement) { 
-        g_jointKnee1 -= step/kneeInterval;
-        g_jointKnee2 += step/kneeInterval;
-      } 
-    
-      if (increment) { 
-        g_jointArm1 -= step/armInterval;
-        g_jointArm2 += step/armInterval;
-      } else if (decrement) { 
-        g_jointArm1 += step/armInterval;
-        g_jointArm2 -= step/armInterval;
-      }
+	      if (increment) { 
+	        g_jointKnee1 -= step/kneeInterval;
+	        g_jointKnee2 += step/kneeInterval;
+	      } else if (decrement) { 
+	        g_jointKnee1 += step/kneeInterval;
+	        g_jointKnee2 -= step/kneeInterval;
+	      } 
+	    
+	      if (increment) { 
+	        g_jointArm1 += step/armInterval;
+	        g_jointArm2 -= step/armInterval;
+	      } else if (decrement) { 
+	        g_jointArm1 -= step/armInterval;
+	        g_jointArm2 += step/armInterval;
+	      }
 
-      if (increment) { 
-        g_jointAnkle1 -= step/ankleInterval;
-        g_jointAnkle2 += step/ankleInterval;
-      } else if (decrement) { 
-        g_jointAnkle1 += step/ankleInterval;
-        g_jointAnkle2 -= step/ankleInterval;
-      }
+	      if (increment) { 
+	        g_jointAnkle1 += step/ankleInterval;
+	        g_jointAnkle2 -= step/ankleInterval;
+	      } else if (decrement) { 
+	        g_jointAnkle1 -= step/ankleInterval;
+	        g_jointAnkle2 += step/ankleInterval;
+	      }
 
-    }
+	    } 
+
+	    if (currentlyPressedKeys[40]){
+	      if(lastUp = false){
+	          if(increment = true){
+	            increment = false;
+	            decrement = true;
+	          } else{
+	            increment = true;
+	            decrement = false;
+	          }
+	      }
+
+	      lastDown = true;
+	      lastUp = false;
+	   
+
+	      if((hipInterval/2 - step/hipInterval) < g_jointHip1){
+	        increment = true;
+	        decrement = false;
+	      } else if ((-hipInterval/2 + step/hipInterval) > g_jointHip1){
+	        increment = false;
+	        decrement = true;
+	      }
+	      
+	      if (increment) { 
+	        g_jointHip1 -= step/hipInterval;
+	        g_jointHip2 += step/hipInterval;
+	      } else if (decrement) { 
+	        g_jointHip1 += step/hipInterval;
+	        g_jointHip2 -= step/hipInterval;
+	      } 
+
+
+	      if (increment) { 
+	        g_jointKnee1 += step/kneeInterval;
+	        g_jointKnee2 -= step/kneeInterval;
+	      } else if (decrement) { 
+	        g_jointKnee1 -= step/kneeInterval;
+	        g_jointKnee2 += step/kneeInterval;
+	      } 
+	    
+	      if (increment) { 
+	        g_jointArm1 -= step/armInterval;
+	        g_jointArm2 += step/armInterval;
+	      } else if (decrement) { 
+	        g_jointArm1 += step/armInterval;
+	        g_jointArm2 -= step/armInterval;
+	      }
+
+	      if (increment) { 
+	        g_jointAnkle1 -= step/ankleInterval;
+	        g_jointAnkle2 += step/ankleInterval;
+	      } else if (decrement) { 
+	        g_jointAnkle1 += step/ankleInterval;
+	        g_jointAnkle2 -= step/ankleInterval;
+	      }
+	    }
+	}
+
 }
 
 var lastTime = 0;
@@ -298,7 +300,7 @@ var g_doorIsOpen = [false, false, false, false, false, false];
 var yDoorMax = 9.0;
 var yDoorMin = 3.0;
 var doorSpeed = 0.0005;
-var treasureFounded = false;
+var treasureFound = false;
 
 function animate() {
     var timeNow = new Date().getTime();
@@ -308,7 +310,7 @@ function animate() {
     var zPosNew = zPos ;
     if (lastTime != 0) {
         var elapsed = timeNow - lastTime;
-        if (speed != 0) {
+        if (speed != 0 && !treasureFound) {
             xPosNew -= Math.sin(degToRad(yaw)) * speed * elapsed;
             zPosNew -= Math.cos(degToRad(yaw)) * speed * elapsed;
             joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
@@ -351,7 +353,7 @@ function animate() {
 
         }
 
-        if(treasureFounded){
+        if(treasureFound){
           treasureYUnits += doorSpeed * elapsed;
         }
         
