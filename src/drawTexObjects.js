@@ -39,12 +39,16 @@ function getTexProgramLocations(gl, texProgram){
   texProgram.u_TorchColor = gl.getUniformLocation(texProgram, 'u_TorchColor');
   texProgram.u_AmbientLight = gl.getUniformLocation(texProgram, 'u_AmbientLight');
   texProgram.u_TorchPosition = gl.getUniformLocation(texProgram, 'u_TorchPosition');
+  texProgram.u_TreasureLight = gl.getUniformLocation(texProgram, 'u_TreasureLight');
+  texProgram.u_TreasureFound = gl.getUniformLocation(texProgram, 'u_TreasureFound');
+
 
 
   if (texProgram.a_Position < 0 || texProgram.a_Normal < 0 || texProgram.a_TexCoord < 0 ||
     !texProgram.u_MvpMatrix || !texProgram.u_NormalMatrix || !texProgram.u_ModelMatrix || 
     !texProgram.u_CameraMatrix || !texProgram.u_Sampler || !texProgram.u_TorchColor ||
-    !texProgram.u_AmbientLight || !texProgram.u_TorchPosition) { 
+    !texProgram.u_AmbientLight || !texProgram.u_TorchPosition || !texProgram.u_TreasureLight ||
+    !texProgram.u_TreasureFound) { 
     console.log('Failed to get the storage location of attribute or uniform variable'); 
     return;
   }
@@ -112,8 +116,8 @@ function drawFloor(gl, program, o){
   g_normalMatrix.setInverseOf(g_modelMatrix);
   g_normalMatrix.transpose();
   var lightDirection = new Vector3([xPos, yPos, zPos]);
-  //lightDirection.normalize();
-  // Normalize
+
+
   gl.uniform3fv(program.u_TorchPosition, lightDirection.elements);
   gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
   gl.uniformMatrix4fv(program.u_ModelMatrix, false, g_modelMatrix.elements);
@@ -134,9 +138,9 @@ function drawSolidCube(gl, program, o, x) {
   drawCube(gl, program, o, x);   // Draw
 }
 */
-
+var treasureYUnits = 0.5;
 function drawTexTreasure(gl, program, treasure, texture, x, z){
-	  drawTexCuboid(gl, program, treasure, texture, x, g_treasureYunits, z, 90.0, g_drawingColors[6], g_picked);
+	  drawTexCuboid(gl, program, treasure, texture, x, treasureYUnits, z, 90.0);
 }
 
 function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
@@ -177,11 +181,11 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
   //left external wall 2
   drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[4], mazeWallsArray[6].yUnits, -loc[5], 90.0);
   //top external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, loc[5], mazeWallsArray[6].yUnits, -loc[4], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, loc[5], mazeWallsArray[6].yUnits, -loc[4]+1, 0.0);
   //top external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[5], mazeWallsArray[6].yUnits, -loc[4], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[5], mazeWallsArray[6].yUnits, -loc[4]+1, 0.0);
   //bottom external wall
-  drawTexCuboid(gl, program, mazeWallsArray[5], texture, 0.0, mazeWallsArray[5].yUnits, loc[4], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[5], texture, 0.0, mazeWallsArray[5].yUnits, loc[4]-1, 0.0);
   //right external wall
   drawTexCuboid(gl, program, mazeWallsArray[5], texture, loc[4], mazeWallsArray[5].yUnits, 0.0, 90.0);
 
@@ -244,7 +248,7 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
   drawTexCuboid(gl, program, mazeWallsArray[11], texture, loc[2], mazeWallsArray[11].yUnits, 100.0, 0.0);
 
   //level 2 tamarrate
-  drawTexCuboid(gl, program, mazeWallsArray[13], texture, 0.0, mazeWallsArray[13].yUnits+12.0, loc[4], 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[13], texture, 0.0, mazeWallsArray[13].yUnits+12.0, loc[4]-1.0, 0.0);
   drawTexCuboid(gl, program, mazeWallsArray[13], texture, loc[4], mazeWallsArray[13].yUnits+12.0, 0.0, 90.0);
   drawTexCuboid(gl, program, mazeWallsArray[13], texture, 0.0, mazeWallsArray[13].yUnits+12.0, -loc[4]+1.0, 0.0);
   drawTexCuboid(gl, program, mazeWallsArray[16], texture, 0.0, mazeWallsArray[16].yUnits+12.0, -loc[4]+3.0, 0.0);
@@ -319,9 +323,7 @@ function drawTexDoors(gl, program, door, texture){
 function drawTexCuboid(gl, program, o, texture, x, y, z, planeAngle, color=null, picked=false) {
   gl.useProgram(program);   // Tell that this program object is used
 
-
   if(picked){
-  	  //gl.uniform1i(program.u_Clicked, 1);  // Pass true to u_Clicked
   	  gl.uniform3f(program.u_ClickedColor, color[0], color[1], color[2]);
   }
   // Assign the buffer objects and enable the assignment
@@ -335,11 +337,7 @@ function drawTexCuboid(gl, program, o, texture, x, y, z, planeAngle, color=null,
   gl.bindTexture(gl.TEXTURE_2D, texture);
 
   drawCuboid(gl, program, o, x, y, z, planeAngle); // Draw
-  gl.bindTexture(gl.TEXTURE_2D, null);
-  //gl.uniform1i(program.u_Clicked, 0);  // Pass true to u_Clicked
-
-  //gl.uniform1i(program.u_Clicked, 0);  // Pass true to u_Clicked
-
+  //gl.bindTexture(gl.TEXTURE_2D, null);
 }
 
 

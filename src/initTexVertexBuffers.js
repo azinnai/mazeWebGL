@@ -91,6 +91,12 @@ function initMazeVertexBuffers(gl) {
   mazeWalls[16].xUnits = xUnits6;
   mazeWalls[16].yUnits = yUnits1;
 
+
+
+
+
+
+
   for(i=1; i < mazeWalls.length; i++){
     if (!mazeWalls[i]) {
       console.log('Failed to set the cube vertex information');
@@ -102,11 +108,12 @@ function initMazeVertexBuffers(gl) {
 
 function initTreasureVertexBuffers(gl){
   // TREASURE BOX
-  xUnits0 = 0.5;
+  xUnits0 = 1.0;
   yUnits0 = 0.5;
+  textureUnits = [1.0,1.0];
   var treasure;
-   var textureMapping = [1.0, 1.0];
-  treasure = initCubeVertexBuffers(gl, xUnits0, yUnits0, textureMapping);
+
+  treasure = initCubeVertexBuffers(gl, xUnits0, yUnits0, textureUnits);
   treasure.xUnits = xUnits0;
   treasure.yUnits = yUnits0;
 

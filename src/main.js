@@ -76,11 +76,13 @@ var TEXTURE_FSHADER_SOURCE =
   'uniform sampler2D u_Sampler;\n' +
   'uniform vec3 u_TorchColor;\n' +     // Light color  
   'uniform vec3 u_AmbientLight;\n' +   // Ambient light color
+  'uniform vec3 u_TreasureLight;\n' +   // Ambient light color
   'uniform mat4 u_CameraMatrix;\n' +
   'uniform vec3 u_TorchPosition;\n' +
   'varying vec2 v_TexCoord;\n' +
   'varying vec3 v_Normal;\n' +
   'varying vec3 v_Position;\n' +
+  'uniform bool u_TreasureFound;\n' + // Mouse is pressed
   'void main() {\n' +
   '  vec4 color = texture2D(u_Sampler, v_TexCoord);\n' +
 
@@ -105,7 +107,11 @@ var TEXTURE_FSHADER_SOURCE =
   '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
   '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
   '  vec3 directional = nDotL*colorDirectionalLight*color.rgb;\n' +
-  '    gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
+  '  if(u_TreasureFound){\n' + 
+  '     gl_FragColor = vec4(u_TreasureLight*color.rgb, color.a);\n' +
+  '  } else {\n' +
+  '     gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
+  '  }\n' +
   '}\n';
 
   var MOUSE_VSHADER_SOURCE =
@@ -167,13 +173,13 @@ var MOUSE_FSHADER_SOURCE =
   '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
   '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
   '  vec3 directional = nDotL*colorDirectionalLight*color.rgb;\n' +
-  '  vec4 finalColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
+  '  gl_FragColor = vec4(diffuse + 0.4*ambient + 0.4*directional, color.a);\n' +
   '  if (u_Clicked) {\n' + //  Draw in red if mouse is pressed
   '    gl_FragColor = vec4(u_ClickedColor, 1.0);\n' +
-  '  } else {\n' +
-  '  gl_FragColor = finalColor;\n'	+
-  '	 }\n' +
+  '  }\n' +
   '}\n';
+
+
 
 function main() {
   // Retrieve <canvas> element
@@ -268,7 +274,8 @@ function main() {
     console.log('Failed to intialize the avatar texture.');
     return;
   }
-  var treasureTexture = init2DTexture(gl, mouseProgram, 'resources/wood.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
+  //il tesoro si deve stampare con un'altra funzione non in drawtexobjects
+  var treasureTexture = init2DTexture(gl, texProgram, 'resources/wood.jpg'); //questa bisogna cambiarla, ce ne sono alcune carine ma non gli piacciono
   if (!floorTexture) {
     console.log('Failed to intialize the trasure texture.');
     return;
@@ -304,13 +311,13 @@ function main() {
 
 
 	treasurePos = treasureRandomPos();
-	treasurePos = [0,230];
+  treasurePos = [0,230];
 	//setting mazewalls locations
 	var x0 = 50.0;
 	var z0 = 26.25;
 	var x1 = 100.0;
 	var z1 = 52.0;
-	var x2 = 149.0;
+	var x2 = 150.0;
 	var z2 = 76.5;
 	var x3 = 192.0;
 	var z3 = 98.0;
@@ -322,7 +329,7 @@ function main() {
   var x0D = -50.0;
   var x1D = 100.0;
   var x2D = 0;
-  var x3D = -149.0;
+  var x3D = -150.0;
   var x4D = 0.0;
   var x5D = 0.0;
   var z0D = 0.0;
@@ -335,16 +342,22 @@ function main() {
   var doorLocations = [[x0D,z0D], [x1D,z1D], [x2D,z2D], [x3D,z3D], [x4D,z4D], [x5D,z5D]];
   computeWhiteList(doorLocations);
 
-  	g_drawingColors  = [[0.9,0.5,0.5], [0.0,1.0,0.0], [0.0,0.0,1.0], [0.0,0.5,0.5], [0.5,0.5,0.0], [0.5,0.0,0.5], [1.0,0.0,0.0]];
+  	g_drawingColors  = [[1.0,0.0,0.0], [0.0,1.0,0.0], [0.0,0.0,1.0], [0.0,0.5,0.5], [0.5,0.5,0.0], [0.5,0.0,0.5], [0.9,0.5,0.5]];
 	canvas.onmousedown = function(ev) {   // Mouse is pressed
     var x = ev.clientX, y = ev.clientY;
     var rect = ev.target.getBoundingClientRect();
     if (rect.left <= x && x < rect.right && rect.top <= y && y < rect.bottom) {
       // If pressed position is inside <canvas>, check if it is above object
       var x_in_canvas = x - rect.left, y_in_canvas = rect.bottom - y;
-      check(gl, x_in_canvas, y_in_canvas, mouseProgram.u_Clicked, mouseProgram, door, doorTexture, treasure, treasureTexture);
+      check(gl, x_in_canvas, y_in_canvas, mouseProgram, door, doorTexture);
     }
   }
+
+  var goalDist = 8.0;
+  var treasureYUnitsMax = 3.0;
+  var rT = 1.0;
+  var gT = 1.0;
+  var bT = 1.0;
 
   var tick = function() {
     
@@ -353,24 +366,36 @@ function main() {
     handleKeys();
 
     animate();
-    
+    if(pointDist(treasurePos, [xPos,zPos]) < goalDist){
+      rT = Math.random();
+      gT = Math.random();
+      bT = Math.random();
+      //var factor = treasureYUnits/treasureYUnitsMax;
+      var factor = 1.0;
+      treasureFounded = true;
+      gl.useProgram(texProgram);
+      gl.uniform1i(texProgram.u_TreasureFound, 1);  // Pass true to u_Clicked
+      gl.uniform3f(texProgram.u_TreasureLight, rT*factor, gT*factor, bT*factor);
+    }
+
+    if(treasureYUnits > treasureYUnitsMax){
+      console.log('endeeeeed');
+    }
+
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, drawLocations);
     drawTexAvatar(gl, texProgram, avatar, avatarTexture);
-    drawTexDoors(gl, mouseProgram, door, doorTexture);
-	drawTexTreasure(gl, mouseProgram, treasure, treasureTexture, treasurePos[0], treasurePos[1]);
+    drawTexDoors(gl, texProgram, door, doorTexture);
+    drawTexTreasure(gl, mouseProgram, treasure, treasureTexture, treasurePos[0], treasurePos[1]);
 
-    if(g_gameEnd){
-    	return 0;
-    }
-    
     window.requestAnimationFrame(tick, canvas);
 
   };
 
   tick();
 }
+
 
 
 
