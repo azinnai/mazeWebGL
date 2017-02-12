@@ -5,9 +5,26 @@
     <title>Switch Shaders</title>
   </head>
   <body onload="main()" background="resources/background.jpg">
-    <center> <font size="5"> <h2  style="color:#069">A Humanoid Robot in a Maze - WebGL</h2> </font> </center>
-    <center> <canvas id="webgl" width="1000" height="500"> </center>
-    </canvas>
+    
+    <div class="wrapper" style="margin: 0 auto; width: 1300px; position: relative;">
+    <font size="5"> <h2  style="color:#069">A Humanoid Robot in a Maze - WebGL</h2> </font>
+    <canvas id="webgl" width="1000" height="500"> </canvas>
+    <font size="3"> <h2 id="message" style="color:#3CB371">Find the treasure to win the game!
+    <div class="controls" style="position: absolute; top:0; right:0">
+    <form action="">
+    <font size="5"> <h2 id="message" style="color:#0066cc">Controls 
+    <font size="3"> <h2 id="message" style="color:#009999">  <input type="checkbox" id="view" value="top" onclick="checkBox()"/> top view mode
+    <font size="3"> <h2 id="message" style="color:#009999"> <input type="checkbox" id="nightMode" value="top" onclick="checkBox()"/> night mode
+    <br><br> 
+    <font size="5"> <h2 id="message" style="color:#0066cc">Instructions
+    <font size="2"> <h2 id="message" style="color:#009999"> Press keybord arrows
+    <font size="2"> <h2 id="message" style="color:#009999"> to move the robot in
+    <font size="2"> <h2 id="message" style="color:#009999"> the environment.
+    <font size="2"> <h2 id="message" style="color:#009999"> Press P and L to 
+    <font size="2"> <h2 id="message" style="color:#009999"> rotate the view.
+    </form>
+   </div>
+</div>
     <script src="lib/webgl-utils.js"></script>
     <script src="lib/webgl-debug.js"></script>
     <script src="lib/cuon-utils.js"></script>
@@ -21,12 +38,9 @@
     <script src="src/initTexVertexBuffers.js"></script>
 
 
-<center> <font size="3"> <h2 id="message" style="color:#3CB371">Find the treasure to win the game!
-<form action="">
- <input type="checkbox" id="view" value="top" onclick="checkBox()"/> top view mode
- <input type="checkbox" id="nightMode" value="top" onclick="checkBox()"/> night mode
-</form>
-</h2> </font> </center>
+
+
+</h2> </font> 
 </body>
 
 
