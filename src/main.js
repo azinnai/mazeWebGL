@@ -368,11 +368,11 @@ function main() {
 
     animate();
     if(pointDist(treasurePos, [xPos,zPos]) < goalDist){
-      rT = Math.random();
-      gT = Math.random();
-      bT = Math.random();
-      //var factor = treasureYUnits/treasureYUnitsMax;
-      var factor = 1.0;
+      rT = 1.0;
+      gT = 1.0;
+      bT = 1.0;
+      var factor = treasureYUnits/treasureYUnitsMax*1.4;
+      //var factor = 1.0;
       treasureFound = true;
       gl.useProgram(texProgram);
       gl.uniform1i(texProgram.u_TreasureFound, 1);  // Pass true to u_Clicked
