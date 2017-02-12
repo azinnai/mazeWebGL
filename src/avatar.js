@@ -186,8 +186,8 @@ function drawTexAvatar(gl, program, o, texture) {
 
   // qui è importante capire dove mettere il robot, probabilmente all'inizio non si vedrà
   
-  g_modelMatrix.setTranslate(xPos, yPos-0.5, zPos);
-  g_modelMatrix.translate(-3.0*Math.sin(degToRad(yaw)), 0.0, -3.0*Math.cos(degToRad(yaw)));
+  g_modelMatrix.setTranslate(xPos, 0.5, zPos);
+  //g_modelMatrix.translate(-3.0*Math.sin(degToRad(yaw)), 0.0, -3.0*Math.cos(degToRad(yaw)));
   g_modelMatrix.rotate(yaw, 0.0, 1.0, 0.0);
   g_modelMatrix.scale(0.04,0.04,-0.04);
   drawPartAvatar(gl, program, o.g_bodyBuffer, normals, texCoords, index, texture, n);
@@ -280,7 +280,7 @@ function drawSegment(gl, n, buffer, program) {
   g_normalMatrix.setInverseOf(g_modelMatrix);
   g_normalMatrix.transpose();
   gl.uniformMatrix4fv(program.u_NormalMatrix, false, g_normalMatrix.elements);
-  gl.uniform3f(program.u_TorchPosition, xPos, yPos, zPos - 3.0);
+  gl.uniform3f(program.u_TorchPosition, xPos, yPos, zPos);
 
   // Draw
   gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);

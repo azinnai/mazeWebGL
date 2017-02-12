@@ -105,7 +105,7 @@ var zPos = 240.7057334788756;
 var speed = 0;
 
 // disegno avatar
-var step = 200.0;
+var step = 50.0;
 var ankleInterval = 48.0;
 var armInterval = 25.0;
 var hipInterval = 40.0;
@@ -161,10 +161,10 @@ function handleKeys() {
 
     if (currentlyPressedKeys[38]) {
         // Up cursor key
-        speed = 0.03;
+        speed = 0.008;
     } else if (currentlyPressedKeys[40]) {
         // Down cursor key
-        speed = -0.03;
+        speed = -0.008;
     } else {
         speed = 0;
     }
@@ -310,10 +310,11 @@ function animate() {
     var zPosNew = zPos ;
     if (lastTime != 0) {
         var elapsed = timeNow - lastTime;
-        if (speed != 0 && !treasureFound) {
+        //if (speed != 0 && !treasureFound) {
+		if (!treasureFound) {
             xPosNew -= Math.sin(degToRad(yaw)) * speed * elapsed;
             zPosNew -= Math.cos(degToRad(yaw)) * speed * elapsed;
-            joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
+            if(speed != 0) joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
 //console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
             if(checkBlackList(xPosNew,zPosNew)){

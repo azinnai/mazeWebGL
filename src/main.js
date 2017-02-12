@@ -41,9 +41,13 @@ var SKYBOX_FSHADER_SOURCE = " \
   precision highp float ;\n\
   uniform samplerCube u_CubeMap; \n \
   varying vec3 vpos ;\n\
+  uniform bool u_NightMode ; \n \
   void main( void )\n\
   {\n\
     vec3 color = textureCube(u_CubeMap, vpos).rgb;\n \
+    if (u_NightMode) {\n\
+    	color = color*0.2; \n\
+    }\n \
     gl_FragColor = vec4(0.7*color, 1.0) ;\n \
   } ";
 // Vertex shader for texture drawing
@@ -83,6 +87,8 @@ var TEXTURE_FSHADER_SOURCE =
   'varying vec3 v_Normal;\n' +
   'varying vec3 v_Position;\n' +
   'uniform bool u_TreasureFound;\n' + // Mouse is pressed
+  'uniform bool u_TopView;\n' + // Mouse is pressed
+  'uniform bool u_NightMode;\n' + // Mouse is pressed
   'void main() {\n' +
   '  vec4 color = texture2D(u_Sampler, v_TexCoord);\n' +
 
@@ -95,7 +101,7 @@ var TEXTURE_FSHADER_SOURCE =
   '  float LdotNDiffuse = dot(torchDirection.xyz, -L);\n' +
   '  if(LdotNDiffuse > 0.6) LdotNDiffuse = pow(LdotNDiffuse, 100.0);\n' +
   '  else LdotNDiffuse = 0.0;\n' +
-  '	 float NdotLDiffuse = max(0.0, dot(normal, L))/(0.003*r*r);\n' +
+  '	 float NdotLDiffuse = max(0.0, dot(normal, L))/(0.0009*r*r);\n' +
   '  float diffuseCoef = LdotNDiffuse*NdotLDiffuse;\n' +
   '  if(diffuseCoef>0.7) diffuseCoef = 0.7;\n ' +
   '  vec3 diffuse =  diffuseCoef * u_TorchColor * color.rgb ;\n' +
@@ -107,6 +113,11 @@ var TEXTURE_FSHADER_SOURCE =
   '  vec3 lightDirection = normalize(vec3(0.0, 0.5, 0.7));\n' + // Light direction
   '  float nDotL = max(dot(normal, lightDirection), 0.0);\n' +
   '  vec3 directional = nDotL*colorDirectionalLight*color.rgb;\n' +
+  '  if(u_TopView) diffuse = vec3(0.0,0.0,0.0);\n' +
+  '  if(u_NightMode) {\n' +
+  '	    directional = vec3(0.0,0.0,0.0);\n' +
+  '	    ambient = ambient*0.3;\n' +	
+  '  }\n' +	
   '  if(u_TreasureFound){\n' + 
   '     gl_FragColor = vec4(u_TreasureLight*color.rgb, color.a);\n' +
   '  } else {\n' +
@@ -179,7 +190,9 @@ var MOUSE_FSHADER_SOURCE =
   '  }\n' +
   '}\n';
 
-
+var yPosTop;
+var topModeView = false;
+var nightModeView = false;
 
 function main() {
   // Retrieve <canvas> element
@@ -311,7 +324,7 @@ function main() {
 
 
 	treasurePos = treasureRandomPos();
-  treasurePos = [0,230];
+  //treasurePos = [0,230];
 	//setting mazewalls locations
 	var x0 = 50.0;
 	var z0 = 26.25;
@@ -359,6 +372,8 @@ function main() {
   var gT = 1.0;
   var bT = 1.0;
 
+  
+
   var tick = function() {
 
     
@@ -384,6 +399,28 @@ function main() {
        window.alert("Yuppy!! You have found the treasure!!!");
     }
 
+    if(topModeView){
+      gl.useProgram(texProgram);
+      gl.uniform1i(texProgram.u_TopView, 1);  // Pass true to u_Clicked
+    } else {
+    	gl.useProgram(texProgram);
+    	gl.uniform1i(texProgram.u_TopView, 0);  // Pass true to u_Clicked
+    }
+
+	if(nightModeView){
+      gl.useProgram(texProgram);
+      gl.uniform1i(texProgram.u_NightMode, 1);  // Pass true to u_Clicked
+      gl.useProgram(skyProgram);
+      gl.uniform1i(skyProgram.u_NightMode, 1);  // Pass true to u_Clicked
+
+    } else {
+    	gl.useProgram(texProgram);
+    	gl.uniform1i(texProgram.u_NightMode, 0);  // Pass true to u_Clicked
+	    gl.useProgram(skyProgram);
+        gl.uniform1i(skyProgram.u_NightMode, 0);  // Pass true to u_Clicked
+
+    }
+
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, drawLocations);
@@ -398,6 +435,23 @@ function main() {
   tick();
 }
 
+function checkBox() {
+    var top = document.getElementById('view').checked;
+    var night = document.getElementById('nightMode').checked;
+
+    if(top){
+    	topModeView = true;
+ 		yPosTop = 20;
+    } else {
+    	topModeView =false;
+    }
+    if(night){
+    	nightModeView = true;
+    } else {
+    	nightModeView = false;
+    }
+    animate();
+}
 
 
 

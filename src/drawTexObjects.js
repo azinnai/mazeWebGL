@@ -41,6 +41,8 @@ function getTexProgramLocations(gl, texProgram){
   texProgram.u_TorchPosition = gl.getUniformLocation(texProgram, 'u_TorchPosition');
   texProgram.u_TreasureLight = gl.getUniformLocation(texProgram, 'u_TreasureLight');
   texProgram.u_TreasureFound = gl.getUniformLocation(texProgram, 'u_TreasureFound');
+  texProgram.u_TopView = gl.getUniformLocation(texProgram, 'u_TopView');
+  texProgram.u_NightMode = gl.getUniformLocation(texProgram, 'u_NightMode');
 
 
 
@@ -48,7 +50,7 @@ function getTexProgramLocations(gl, texProgram){
     !texProgram.u_MvpMatrix || !texProgram.u_NormalMatrix || !texProgram.u_ModelMatrix || 
     !texProgram.u_CameraMatrix || !texProgram.u_Sampler || !texProgram.u_TorchColor ||
     !texProgram.u_AmbientLight || !texProgram.u_TorchPosition || !texProgram.u_TreasureLight ||
-    !texProgram.u_TreasureFound) { 
+    !texProgram.u_TreasureFound || !texProgram.u_TopView || !texProgram.u_NightMode) { 
     console.log('Failed to get the storage location of attribute or uniform variable'); 
     return;
   }
@@ -106,7 +108,10 @@ function drawFloor(gl, program, o){
   // Calculate a model matrix
   g_modelMatrix.setTranslate(0.0, 0.0, 0.0);
   //g_modelMatrix.scale(10,0.0,-10);
-  g_cameraMatrix.setTranslate(xPos,yPos,zPos);
+  if(topModeView) yPos = yPosTop;
+  g_cameraMatrix.setTranslate(+3.0*Math.sin(degToRad(yaw))+xPos, yPos, 3.0*Math.cos(degToRad(yaw))+zPos);
+
+  //g_cameraMatrix.setTranslate(xPos,yPos,zPos+3);
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
   g_cameraMatrix.rotate(pitch, 1, 0, 0);
   g_viewMatrix.setInverseOf(g_cameraMatrix);
@@ -358,7 +363,7 @@ function drawCuboid(gl, program, o, x, y, z, planeAngle) {
   g_cameraMatrix.rotate(yaw, 0, 1, 0);
   g_cameraMatrix.rotate(pitch, 1, 0, 0);
   g_viewMatrix.setInverseOf(g_cameraMatrix);
-*/
+   */
   //generating modelViewProjectionMatrix and passing it to the uniform variable
   g_mvpMatrix.set(g_projMatrix).multiply(g_viewMatrix).multiply(g_modelMatrix);
   gl.uniformMatrix4fv(program.u_MvpMatrix, false, g_mvpMatrix.elements);

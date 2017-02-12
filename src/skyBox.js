@@ -5,7 +5,10 @@ function getSkyProgramLocations(gl, skyProgram){
   skyProgram.a_Position = gl.getAttribLocation(skyProgram, 'a_Position');
   skyProgram.u_MvpMatrix = gl.getUniformLocation(skyProgram, 'u_MvpMatrix');
   skyProgram.u_CubeMap = gl.getUniformLocation(skyProgram, 'u_CubeMap');
-  if (skyProgram.a_Position < 0 || !skyProgram.u_MvpMatrix || !skyProgram.u_CubeMap) { 
+  skyProgram.u_NightMode = gl.getUniformLocation(skyProgram, 'u_NightMode');
+
+  if (skyProgram.a_Position < 0 || !skyProgram.u_MvpMatrix || 
+     !skyProgram.u_CubeMap || !skyProgram.u_NightMode) { 
   console.log('Failed to get the storage location of attribute or uniform variable of skyProgram'); 
   return;
   }
