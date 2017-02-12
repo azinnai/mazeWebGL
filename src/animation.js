@@ -161,10 +161,10 @@ function handleKeys() {
 
     if (currentlyPressedKeys[38]) {
         // Up cursor key
-        speed = 0.008;
+        speed = 0.004;
     } else if (currentlyPressedKeys[40]) {
         // Down cursor key
-        speed = -0.008;
+        speed = -0.004;
     } else {
         speed = 0;
     }

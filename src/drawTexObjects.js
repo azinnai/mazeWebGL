@@ -109,10 +109,13 @@ function drawFloor(gl, program, o){
   g_modelMatrix.setTranslate(0.0, 0.0, 0.0);
   //g_modelMatrix.scale(10,0.0,-10);
   if(topModeView) yPos = yPosTop;
-  g_cameraMatrix.setTranslate(+3.0*Math.sin(degToRad(yaw))+xPos, yPos, 3.0*Math.cos(degToRad(yaw))+zPos);
-
-  //g_cameraMatrix.setTranslate(xPos,yPos,zPos+3);
-  g_cameraMatrix.rotate(yaw, 0, 1, 0);
+  if(sideModeView){
+	g_cameraMatrix.setTranslate(+3.0*Math.sin(degToRad(yaw+90))+xPos, yPos-1, 3.0*Math.cos(degToRad(yaw+90))+zPos);
+  	g_cameraMatrix.rotate(yaw +90, 0, 1, 0);	
+  } else{
+	  g_cameraMatrix.setTranslate(+3.0*Math.sin(degToRad(yaw))+xPos, yPos, 3.0*Math.cos(degToRad(yaw))+zPos);
+	  g_cameraMatrix.rotate(yaw, 0, 1, 0);
+  }
   g_cameraMatrix.rotate(pitch, 1, 0, 0);
   g_viewMatrix.setInverseOf(g_cameraMatrix);
 

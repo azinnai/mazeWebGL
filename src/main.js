@@ -190,9 +190,6 @@ var MOUSE_FSHADER_SOURCE =
   '  }\n' +
   '}\n';
 
-var yPosTop;
-var topModeView = false;
-var nightModeView = false;
 
 function main() {
   // Retrieve <canvas> element
@@ -421,6 +418,11 @@ function main() {
 
     }
 
+    if(sideModeView){
+    	gl.useProgram(texProgram);
+    	gl.uniform3f(texProgram.u_TorchColor, 0.0, 0.0, 0.0);
+    }
+
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
     drawTexFloor(gl, texProgram, floor, floorTexture);
    	drawTexMazeWalls(gl, texProgram, mazeWalls, mazeWallTexture, drawLocations);
@@ -435,9 +437,16 @@ function main() {
   tick();
 }
 
+
+var yPosTop;
+var topModeView = false;
+var nightModeView = false;
+var sideModeView = false;
+
 function checkBox() {
     var top = document.getElementById('view').checked;
     var night = document.getElementById('nightMode').checked;
+    var side = document.getElementById('sideMode').checked;
 
     if(top){
     	topModeView = true;
@@ -450,6 +459,12 @@ function checkBox() {
     } else {
     	nightModeView = false;
     }
+    if(side){
+    	sideModeView = true;
+    } else {
+    	sideModeView = false;
+    }
+    
     animate();
 }
 
