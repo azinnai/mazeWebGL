@@ -163,7 +163,7 @@ function initFloorVertexBuffers(gl, halfLength) {
     0.0,1.0,0.0,
     0.0,1.0,0.0,
     ]);
-  halfLength = 0.1*halfLength;
+  halfLength = 0.5*halfLength;
   var texCoords = new Float32Array([   // Texture coordinates
      0.0, 2*halfLength,   2*halfLength, 2*halfLength,   0.0, 0.0,   2*halfLength, 0.0,    // v0-v1-v2-v3 front
   ]);

@@ -273,7 +273,7 @@ function main() {
     return;
   }
 
-  var floorTexture = init2DTexture(gl, texProgram, 'resources/floor.jpg');
+  var floorTexture = init2DTexture(gl, texProgram, 'resources/grass.jpg');
   if (!floorTexture) {
     console.log('Failed to intialize the floor texture.');
     return;
