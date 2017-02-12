@@ -111,7 +111,7 @@ function drawFloor(gl, program, o){
   if(topModeView) yPos = yPosTop;
   if(sideModeView){
 	g_cameraMatrix.setTranslate(+3.0*Math.sin(degToRad(yaw+90))+xPos, yPos-1, 3.0*Math.cos(degToRad(yaw+90))+zPos);
-  	g_cameraMatrix.rotate(yaw +90, 0, 1, 0);	
+  	g_cameraMatrix.rotate(yaw+90, 0, 1, 0);	
   } else{
 	  g_cameraMatrix.setTranslate(+3.0*Math.sin(degToRad(yaw))+xPos, yPos, 3.0*Math.cos(degToRad(yaw))+zPos);
 	  g_cameraMatrix.rotate(yaw, 0, 1, 0);

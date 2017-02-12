@@ -101,7 +101,7 @@ var yaw = 0;
 var yawRate = 0;
 var xPos = 0.0;  
 var yPos = 1.4;
-var zPos = 240.7057334788756;
+var zPos = 210.7057334788756;
 var speed = 0;
 
 // disegno avatar
@@ -162,9 +162,11 @@ function handleKeys() {
     if (currentlyPressedKeys[38]) {
         // Up cursor key
         speed = 0.004;
+        step = 50.0;
     } else if (currentlyPressedKeys[40]) {
         // Down cursor key
         speed = -0.004;
+        step=50.0;
     } else {
         speed = 0;
     }
@@ -284,6 +286,124 @@ function handleKeys() {
 	        g_jointAnkle2 -= step/ankleInterval;
 	      }
 	    }
+
+	   if (currentlyPressedKeys[38] && currentlyPressedKeys[87]) {
+	   	step=1.2*step;
+	        if(lastDown = false){
+	          if(increment = true){
+	            increment = false;
+	            decrement = true;
+	          } else {
+	            increment = true;
+	            decrement = false;
+	          }
+	      }
+
+	      if((hipInterval - step/hipInterval) < g_jointHip1){
+	        increment = false;
+	        decrement = true;
+	      } else if ((-hipInterval + step/hipInterval) > g_jointHip1){
+	        increment = true;
+	        decrement = false;
+	      }
+
+	    
+	      lastUp = true;
+	      lastDown = false;
+
+	      if (increment) { 
+	        g_jointHip1 += step/hipInterval;
+	        g_jointHip2 -= step/hipInterval;
+	      } else if (decrement) { 
+	        g_jointHip1 -= step/hipInterval;
+	        g_jointHip2 += step/hipInterval;
+	      } 
+
+
+	      if (increment) { 
+	        g_jointKnee1 -= step/kneeInterval;
+	        g_jointKnee2 += step/kneeInterval;
+	      } else if (decrement) { 
+	        g_jointKnee1 += step/kneeInterval;
+	        g_jointKnee2 -= step/kneeInterval;
+	      } 
+	    
+	      if (increment) { 
+	        g_jointArm1 += step/armInterval;
+	        g_jointArm2 -= step/armInterval;
+	      } else if (decrement) { 
+	        g_jointArm1 -= step/armInterval;
+	        g_jointArm2 += step/armInterval;
+	      }
+
+	      if (increment) { 
+	        g_jointAnkle1 += step/ankleInterval;
+	        g_jointAnkle2 -= step/ankleInterval;
+	      } else if (decrement) { 
+	        g_jointAnkle1 -= step/ankleInterval;
+	        g_jointAnkle2 += step/ankleInterval;
+	      }
+
+	    } 
+
+	    if (currentlyPressedKeys[40] && currentlyPressedKeys[87]){
+	    	step=1.2*step;
+	      if(lastUp = false){
+	          if(increment = true){
+	            increment = false;
+	            decrement = true;
+	          } else{
+	            increment = true;
+	            decrement = false;
+	          }
+	      }
+
+	      lastDown = true;
+	      lastUp = false;
+	   
+
+	      if((hipInterval - step/hipInterval) < g_jointHip1){
+	        increment = true;
+	        decrement = false;
+	      } else if ((-hipInterval + step/hipInterval) > g_jointHip1){
+	        increment = false;
+	        decrement = true;
+	      }
+	      
+	      if (increment) { 
+	        g_jointHip1 -= step/hipInterval;
+	        g_jointHip2 += step/hipInterval;
+	      } else if (decrement) { 
+	        g_jointHip1 += step/hipInterval;
+	        g_jointHip2 -= step/hipInterval;
+	      } 
+
+
+	      if (increment) { 
+	        g_jointKnee1 += step/kneeInterval;
+	        g_jointKnee2 -= step/kneeInterval;
+	      } else if (decrement) { 
+	        g_jointKnee1 -= step/kneeInterval;
+	        g_jointKnee2 += step/kneeInterval;
+	      } 
+	    
+	      if (increment) { 
+	        g_jointArm1 -= step/armInterval;
+	        g_jointArm2 += step/armInterval;
+	      } else if (decrement) { 
+	        g_jointArm1 += step/armInterval;
+	        g_jointArm2 -= step/armInterval;
+	      }
+
+	      if (increment) { 
+	        g_jointAnkle1 -= step/ankleInterval;
+	        g_jointAnkle2 += step/ankleInterval;
+	      } else if (decrement) { 
+	        g_jointAnkle1 += step/ankleInterval;
+	        g_jointAnkle2 -= step/ankleInterval;
+	      }
+	    }
+	 
 	}
 
 }
@@ -328,7 +448,26 @@ function animate() {
             	joggingAngle = joggingAngleNew;
             	yPos = yPosNew;	
             } 
-        }
+        } 
+
+        if(!treasureFound && currentlyPressedKeys[87]) {
+            xPosNew -= Math.sin(degToRad(yaw)) * 1.5 * speed * elapsed;
+            zPosNew -= Math.cos(degToRad(yaw)) * 1.5 * speed * elapsed;
+            console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
+            if(speed != 0) joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
+            yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
+//console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
+            if(checkBlackList(xPosNew,zPosNew)){
+            	xPos = xPosNew;
+            	zPos = zPosNew;
+            	joggingAngle = joggingAngleNew;
+            	yPos = yPosNew;
+            } else if(checkWhiteList(xPosNew, zPosNew)){
+            	xPos = xPosNew;
+            	zPos = zPosNew;
+            	joggingAngle = joggingAngleNew;
+            	yPos = yPosNew;	
+            } } 
         yaw += yawRate * elapsed;
         pitch += pitchRate * elapsed;
        

@@ -421,6 +421,9 @@ function main() {
     if(sideModeView){
     	gl.useProgram(texProgram);
     	gl.uniform3f(texProgram.u_TorchColor, 0.0, 0.0, 0.0);
+    } else {
+      gl.useProgram(texProgram);
+      gl.uniform3f(texProgram.u_TorchColor, 1.0, 1.0, 1.0);
     }
 
     drawTexSkyBox(gl, skyProgram, skyCube, cubeMapTexture);
