@@ -8,4 +8,4 @@ cosa da finire per il progetto.
 	- https://github.com/Jam3/orbit-controls
 5) pannello html per interazione con il codice javascript, e.g. cambio visual e istruzioni
 6) aggiustare lo zFight! i muri hanno dai lati che vengono disegnati nella stessa identica location, vanno aggiunti degli incrementi/dfecrementi piccolissimi in maniera tale che non si sovrappongano mai e non faccia quelle cose strane con la texture
-
+7) aggiustare le texture in tamarrate, sono tutte sballate.
