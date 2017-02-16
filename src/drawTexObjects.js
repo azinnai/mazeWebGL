@@ -264,12 +264,12 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
   drawTexCuboid(gl, program, mazeWallsArray[13], texture, -loc[4], mazeWallsArray[13].yUnits+12.0, 0.0, 90.0);
   drawTexCuboid(gl, program, mazeWallsArray[16], texture, -loc[4]-2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
   drawTexCuboid(gl, program, mazeWallsArray[16], texture, -loc[4]+2.0, mazeWallsArray[16].yUnits+12.0, 0.0, 90.0);
-  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, -4.0, 0.0);
-  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, 4.0, 0.0);
-  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, -8.0, 0.0);
-  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, 8.0, 0.0);
-  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, -12.0, 0.0);
-  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits, 12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits-1, -4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits-1, 4.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits-1, -8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits-1, 8.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits-1, -12.0, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[15], texture, -loc[4], mazeWallsArray[9].yUnits-1, 12.0, 0.0);
   drawTexCuboid(gl, program, mazeWallsArray[15], texture, -4.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
   drawTexCuboid(gl, program, mazeWallsArray[15], texture,  4.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
   drawTexCuboid(gl, program, mazeWallsArray[15], texture, -8.0, mazeWallsArray[15].yUnits, -loc[4]+1.0, 90.0);
