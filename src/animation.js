@@ -101,7 +101,7 @@ var yaw = 0;
 var yawRate = 0;
 var xPos = 0.0;  
 var yPos = 1.4;
-var zPos = 200.0; //210.7057334788756;
+var zPos = -160.0; //210.7057334788756;
 var speed = 0;
 
 // disegno avatar
