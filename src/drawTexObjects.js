@@ -185,17 +185,17 @@ function drawTexMazeWalls(gl, program, mazeWallsArray, texture, loc){
 
   // LEVEL 2
   //left external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[4], mazeWallsArray[6].yUnits, loc[5], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[4], mazeWallsArray[6].yUnits, loc[5]-0.5, 90.0);
   //left external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[4], mazeWallsArray[6].yUnits, -loc[5], 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[4], mazeWallsArray[6].yUnits, -loc[5]+0.5, 90.0);
   //top external wall 1
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, loc[5], mazeWallsArray[6].yUnits, -loc[4]+1, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, loc[5]+0.5, mazeWallsArray[6].yUnits, -loc[4]+1, 0.0);
   //top external wall 2
-  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[5], mazeWallsArray[6].yUnits, -loc[4]+1, 0.0);
+  drawTexCuboid(gl, program, mazeWallsArray[6], texture, -loc[5]-0.5, mazeWallsArray[6].yUnits, -loc[4]+1, 0.0);
   //bottom external wall
   drawTexCuboid(gl, program, mazeWallsArray[5], texture, 0.0, mazeWallsArray[5].yUnits, loc[4]-1, 0.0);
   //right external wall
-  drawTexCuboid(gl, program, mazeWallsArray[5], texture, loc[4], mazeWallsArray[5].yUnits, 0.0, 90.0);
+  drawTexCuboid(gl, program, mazeWallsArray[17], texture, loc[4], mazeWallsArray[5].yUnits, 0.0, 90.0);
 
 
   // LEVEL 3

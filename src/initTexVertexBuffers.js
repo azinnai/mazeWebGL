@@ -6,9 +6,9 @@ function initMazeVertexBuffers(gl) {
   var xUnits1;
 
   // LEVEL 0 (inner)
-  xUnits0 = 51.0;
+  xUnits0 = 49.0;
   yUnits0 = 3.0;
-  xUnits1 = 23.25;
+  xUnits1 = 22.80;
   
   mazeWalls[1] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[2] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
@@ -19,9 +19,9 @@ function initMazeVertexBuffers(gl) {
 
   
   // LEVEL 1
-  xUnits0 = 101.0;
+  xUnits0 = 99.0;
   yUnits0 = 3.0;
-  xUnits1 = 49.0;
+  xUnits1 = 47.0;
   
   mazeWalls[3] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[4] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
@@ -31,9 +31,9 @@ function initMazeVertexBuffers(gl) {
   mazeWalls[4].yUnits = yUnits0;
 
   // LEVEL 2
-  xUnits0 = 150.0;
+  xUnits0 = 149.0;
   yUnits0 = 3.0;
-  xUnits1 = 73.5;
+  xUnits1 = 72.0;
 
   mazeWalls[5] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[6] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
@@ -43,9 +43,9 @@ function initMazeVertexBuffers(gl) {
   mazeWalls[6].yUnits = yUnits0;
 
   // LEVEL 3 (outer)
-  xUnits0 = 193.0;
+  xUnits0 = 191.0;
   yUnits0 = 3.0;
-  xUnits1 = 95.0;
+  xUnits1 = 93.0;
   
   mazeWalls[7] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[8] = initCubeVertexBuffers(gl, xUnits1, yUnits0);
@@ -56,24 +56,27 @@ function initMazeVertexBuffers(gl) {
 
   // EXTENSIONS AT DOORS
   xUnits0 = 1.0;
-  yUnits0 = 6.0;
-  xUnits1 = 51.0;
+  yUnits0 = 7.0;
+  xUnits1 = 49.0;
   yUnits1 = 1.0;
-  xUnits2 = 101.0;
-  xUnits3 = 150.0;
-  xUnits4 = 193.0;
+  xUnits2 = 99.0;
+  xUnits3 = 149.0;
+  xUnits4 = 191.0;
   xUnits5 = 3.0;
   xUnits6 = 13.0;
-
+  xUnits7 = 148.0;
+  yUnits2 = 6.0;
+  textureUnits = [2.0, 4.0];
   
   mazeWalls[9] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
   mazeWalls[10] = initCubeVertexBuffers(gl, xUnits1, yUnits1);
-  mazeWalls[11] = initCubeVertexBuffers(gl, xUnits0, yUnits0);
+  mazeWalls[11] = initCubeVertexBuffers(gl, xUnits0, yUnits0, textureUnits);
   mazeWalls[12] = initCubeVertexBuffers(gl, xUnits2, yUnits1);
   mazeWalls[13] = initCubeVertexBuffers(gl, xUnits3, yUnits1);
   mazeWalls[14] = initCubeVertexBuffers(gl, xUnits4, yUnits1);
-  mazeWalls[15] = initCubeVertexBuffers(gl, xUnits5, yUnits0);
+  mazeWalls[15] = initCubeVertexBuffers(gl, xUnits5, yUnits2, textureUnits);
   mazeWalls[16] = initCubeVertexBuffers(gl, xUnits6, yUnits1);
+  mazeWalls[17] = initCubeVertexBuffers(gl, xUnits7, xUnits5);
   mazeWalls[9].xUnits = xUnits0;
   mazeWalls[9].yUnits = yUnits0;
   mazeWalls[10].xUnits = xUnits1;
@@ -87,11 +90,11 @@ function initMazeVertexBuffers(gl) {
   mazeWalls[14].xUnits = xUnits4;
   mazeWalls[14].yUnits = yUnits1;
   mazeWalls[15].xUnits = xUnits5;
-  mazeWalls[15].yUnits = yUnits0;
+  mazeWalls[15].yUnits = yUnits2;
   mazeWalls[16].xUnits = xUnits6;
   mazeWalls[16].yUnits = yUnits1;
-
-
+  mazeWalls[17].xUnits = xUnits7;
+  mazeWalls[17].yUnits = xUnits5;
 
 
 
@@ -109,7 +112,7 @@ function initMazeVertexBuffers(gl) {
 function initTreasureVertexBuffers(gl){
   // TREASURE BOX
   xUnits0 = 1.0;
-  yUnits0 = 0.5;
+  yUnits0 = 1.0;
   textureUnits = [1.0,1.0];
   var treasure;
 
