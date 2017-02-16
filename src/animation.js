@@ -16,18 +16,18 @@ function computeBlackList(mazeWallsArray, locations) {
 	} 
  }
 
- function computeWhiteList(locations) {
+function computeWhiteList(locations) {
 
   for (i = 0; i < locations.length; i++) {
     
-    x0 = locations[i][0]+2.0;
-    x1 = x0-4.0;
-    z0 = locations[i][1]+2.0;//mazeWallsArray[i+1].xUnits;
-    z1 = z0-4.0;
+    x0 = locations[i][0]+2.2;
+    x1 = x0-4.2;
+    z0 = locations[i][1]+2.2;//mazeWallsArray[i+1].xUnits;
+    z1 = z0-4.2;
     
     whitelist[i] = [[x0,z0], [x1,z1]];
   } 
-} 
+}
 
 function checkWhiteList(x,z){
   var insideEXT = false;
@@ -101,7 +101,7 @@ var yaw = 0;
 var yawRate = 0;
 var xPos = 0.0;  
 var yPos = 1.4;
-var zPos = -160.0; //210.7057334788756;
+var zPos = 210.7057334788756;
 var speed = 0;
 
 // disegno avatar
