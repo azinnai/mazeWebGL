@@ -1,4 +1,5 @@
 cosa da finire per il progetto.
 
-1) aggiustare lo zFight! i muri hanno dai lati che vengono disegnati nella stessa identica location, vanno aggiunti degli incrementi/dfecrementi piccolissimi in maniera tale che non si sovrappongano mai e non faccia quelle cose strane con la texture
-2) aggiustare le texture in tamarrate, sono tutte sballate.
+Come lo vogliamo fare questo report?
+Facciamo un piano di battaglia che io appena do prolog mi ci metto.
+Scriviamo qua come vogliamo farlo, perchè c'è da pensarci un attimo!
