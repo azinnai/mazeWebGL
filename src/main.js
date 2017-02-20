@@ -321,7 +321,7 @@ function main() {
 
 
 	treasurePos = treasureRandomPos();
-  //treasurePos = [0,230];
+  //treasurePos = [0,200];
 	//setting mazewalls locations
 	var x0 = 50.0;
 	var z0 = 26.25;
