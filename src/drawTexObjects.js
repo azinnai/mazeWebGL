@@ -146,7 +146,7 @@ function drawSolidCube(gl, program, o, x) {
   drawCube(gl, program, o, x);   // Draw
 }
 */
-var treasureYUnits = 0.5;
+var treasureYUnits = 1.0;
 function drawTexTreasure(gl, program, treasure, texture, x, z){
 	  drawTexCuboid(gl, program, treasure, texture, x, treasureYUnits, z, 90.0);
 }

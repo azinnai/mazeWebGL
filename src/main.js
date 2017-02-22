@@ -99,9 +99,9 @@ var TEXTURE_FSHADER_SOURCE =
   '  float r = distance(u_TorchPosition, v_Position);\n' +
   '  vec3 L = normalize(u_TorchPosition - v_Position);\n' +
   '  float LdotNDiffuse = dot(torchDirection.xyz, -L);\n' +
-  '  if(LdotNDiffuse > 0.6) LdotNDiffuse = pow(LdotNDiffuse, 100.0);\n' +
+  '  if(LdotNDiffuse > 0.8) LdotNDiffuse = pow(LdotNDiffuse, 100.0);\n' +
   '  else LdotNDiffuse = 0.0;\n' +
-  '	 float NdotLDiffuse = max(0.0, dot(normal, L))/(0.0009*r*r);\n' +
+  '	 float NdotLDiffuse = max(0.0, dot(normal, L))/(0.0004*r*r);\n' +
   '  float diffuseCoef = LdotNDiffuse*NdotLDiffuse;\n' +
   '  if(diffuseCoef>0.7) diffuseCoef = 0.7;\n ' +
   '  vec3 diffuse =  diffuseCoef * u_TorchColor * color.rgb ;\n' +
@@ -279,7 +279,7 @@ function main() {
     return;
   }
 
-  var avatarTexture = init2DTexture(gl, texProgram, 'resources/avatar.jpg');
+  var avatarTexture = init2DTexture(gl, texProgram, 'resources/avatar3.jpg');
   if (!floorTexture) {
     console.log('Failed to intialize the avatar texture.');
     return;
@@ -321,7 +321,7 @@ function main() {
 
 
 	treasurePos = treasureRandomPos();
-  //treasurePos = [0,200];
+  treasurePos = [0,200];
 	//setting mazewalls locations
 	var x0 = 50.0;
 	var z0 = 26.25;
@@ -332,7 +332,7 @@ function main() {
 	var x3 = 192.0;
 	var z3 = 98.0;
 	var blackLocations = [x0, x1, x2, x3, halfFloorSideLength];
-  computeBlackList(mazeWalls, blackLocations);
+  //computeBlackList(mazeWalls, blackLocations);
 
 	var drawLocations = [x0, z0, x1, z1, x2, z2, x3, z3];
 
@@ -453,7 +453,7 @@ function checkBox() {
 
     if(top){
     	topModeView = true;
- 		yPosTop = 20;
+ 		  yPosTop = 40;
     } else {
     	topModeView =false;
     }

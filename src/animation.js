@@ -453,7 +453,7 @@ function animate() {
         if(!treasureFound && currentlyPressedKeys[87]) {
             xPosNew -= Math.sin(degToRad(yaw)) * 1.5 * speed * elapsed;
             zPosNew -= Math.cos(degToRad(yaw)) * 1.5 * speed * elapsed;
-            console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
+            //console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
             if(speed != 0) joggingAngleNew += elapsed * 0.6; // 0.6 "fiddle factor" - makes it feel more realistic :-)
             yPosNew = Math.sin(degToRad(joggingAngle)) / 20 + 1.4;
 //console.log('xPos  '+ xPosNew + ' yPos  '+ zPosNew);
